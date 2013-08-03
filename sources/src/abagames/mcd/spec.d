@@ -64,6 +64,8 @@ public template CentMoveImpl() {
       case CentType.ROLL:
         enemy.slowLinearVel(CentHead.SLOW_VELOCITY_RATIO * state.slowVelocityRatio * 5);
         break;
+      default:
+        break;
       }
     } else {
       if (state.topBullet)
@@ -123,6 +125,8 @@ public template CentMoveImpl() {
       float sd = atan2(-ship.pos.x + state.pos.x, ship.pos.y - state.pos.y);
       float sf = FORWARD_FORCE_BASE * state.forwardForceScale * 0.16f;
       enemy.addForce(-sin(sd) * sf, cos(sd) * sf);
+      break;
+    default:
       break;
     }
     Math.normalizeDeg(ad);
@@ -210,7 +214,7 @@ public template CentMoveImpl() {
     if (state.isHead) {
       glPushMatrix();
       Screen.glTranslate(state.pos);
-      glMultMatrixd(state.rot);
+      glMultMatrixd(state.rot.ptr);
       glScalef(state.sizeScale.x, state.sizeScale.y, state.sizeScale.z);
       subShape.draw();
       glPopMatrix();
@@ -229,13 +233,13 @@ public class CentBarrage {
   BasicBarrageType type;
   float speedRank;
   int interval;
-  char[] wayMorphBml;
+  string wayMorphBml;
   float wayMorphRank;
-  char[] barMorphBml;
+  string barMorphBml;
   float barMorphRank;
  private:
 
-  invariant {
+  invariant() {
     assert(speedRank > 0 && speedRank < 10);
     assert(interval > 0);
   }
@@ -254,6 +258,8 @@ public class CentBarrage {
       break;
     case BasicBarrageType.ONE_SIDE:
       state.barrage.addBml("basic", "sideoneway.xml", 1, speedRank);
+      break;
+    default:
       break;
     }
     if (wayMorphBml)
@@ -282,6 +288,8 @@ public class CentBarrage {
       state.setPlumbDirection = true;
       state.topBullet.unsetAimTop();
       break;
+    default:
+      break;
     }
   }
 }
@@ -302,6 +310,8 @@ public template CentHeadInitImpl() {
       bodyLength = 7 + rand.nextInt(2);
       ss = 1.6f + rand.nextFloat(0.1f);
       break;
+    default:
+      break;
     }
     baseSize = size;
     sizeScale = new Vector3(ss, ss, 1);
@@ -316,7 +326,7 @@ public template CentHeadInitImpl() {
   }
 
   protected void calcBarrageSpeedAndInterval(
-    inout float rank, float br, out float speed, out int interval,
+    ref float rank, float br, out float speed, out int interval,
     float minInterval = 20, float maxInterval = 120) {
     float sr = br * (0.5f + rand.nextSignedFloat(0.2f));
     float ir = br - sr;
@@ -335,7 +345,7 @@ public template CentHeadInitImpl() {
   }
 
   protected void calcForwardForceAndSlowVelocity(
-    inout float rank, int size,
+    ref float rank, int size,
     out float forwardForceScale, out float slowVelocityRatio) {
     forwardForceScale = 1;
     if (rand.nextInt(5) == 0) {
@@ -367,7 +377,7 @@ public class CentHeadToAndFrom: CentHead {
   static const float COLOR_G = 0.25f;
   static const float COLOR_B = 1.0f;
  private:
-  static const char[][] BAR_MORPH_BML = [
+  static string[] BAR_MORPH_BML = [
     "baraccel.xml", "whip.xml", "slidebar.xml", "slidebaraccel.xml", "slidewhip.xml"];
 
   public this(Field field, Ship ship, BulletPool bullets, World world, float rank, int size) {
@@ -388,7 +398,7 @@ public class CentHeadToAndFrom: CentHead {
       float br = rk * (0.1f * size + rand.nextFloat(0.1f));
       float brv = calcBarrageRank(br);
       if (brv >= 0.1f) {
-        bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
+        bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
         bodyBarrage.barMorphRank = brv;
         rk -= br * 2;
       } else {
@@ -406,7 +416,7 @@ public class CentHeadToAndFrom: CentHead {
     float br = rk * (0.1f * size + rand.nextFloat(0.3f));
     float brv = calcBarrageRank(br);
     if (brv >= 0.1f) {
-      headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
+      headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
       headBarrage.barMorphRank = brv;
       rk -= br * 2;
     } else {
@@ -427,6 +437,8 @@ public class CentHeadToAndFrom: CentHead {
       break;
     case 2:
       calcBarrageSpeedAndInterval(rk, rk, sp, iv, 5, 60);
+      break;
+    default:
       break;
     }
     headBarrage.speedRank = sp;
@@ -450,9 +462,9 @@ public class CentHeadChase: CentHead {
   static const float COLOR_G = 0.25f;
   static const float COLOR_B = 0.75f;
  private:
-  static const char[][] WAY_MORPH_BML = [
+  static string[] WAY_MORPH_BML = [
     "accnway.xml", "decnway.xml", "nway.xml"];
-  static const char[][] BAR_MORPH_BML = [
+  static string[] BAR_MORPH_BML = [
     "bar.xml", "baraccel.xml", "whip.xml"];
 
   public this(Field field, Ship ship, BulletPool bullets, World world, float rank, int size) {
@@ -470,7 +482,7 @@ public class CentHeadChase: CentHead {
       float br = rk * (0.1f + rand.nextFloat(0.1f));
       float brv = calcBarrageRank(br);
       if (brv >= 0.1f) {
-        bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
+        bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
         bodyBarrage.barMorphRank = brv;
         rk -= br * 2;
       } else {
@@ -495,19 +507,21 @@ public class CentHeadChase: CentHead {
     case 2:
       wr = rk * (0.1f + rand.nextFloat(0.1f));
       break;
+    default:
+      break;
     }
     float br = rk * rand.nextFloat(0.3f);
     float wrv = calcBarrageRank(wr);
     float brv = calcBarrageRank(br);
     if (wrv >= 0.2f) {
-      headBarrage.wayMorphBml = WAY_MORPH_BML[rand.nextInt(WAY_MORPH_BML.length)];
+      headBarrage.wayMorphBml = WAY_MORPH_BML[rand.nextInt(cast(int)(WAY_MORPH_BML.length))];
       headBarrage.wayMorphRank = wrv;
       rk -= wr * 2;
     } else {
       headBarrage.wayMorphBml = null;
     }
     if (brv >= 0.1f) {
-      headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
+      headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
       headBarrage.barMorphRank = brv;
       rk -= br * 2;
     } else {
@@ -544,9 +558,9 @@ public class CentHeadRoll: CentHead {
   static const float COLOR_G = 0.75f;
   static const float COLOR_B = 0.75f;
  private:
-  static const char[][] WAY_MORPH_BML = [
+  static string[] WAY_MORPH_BML = [
     "nway.xml", "round.xml"];
-  static const char[][] BAR_MORPH_BML = [
+  static string[] BAR_MORPH_BML = [
     "bar.xml", "baraccel.xml", "whip.xml",
     "slidebar.xml", "slidebaraccel.xml", "slidewhip.xml"];
 
@@ -563,7 +577,7 @@ public class CentHeadRoll: CentHead {
     float br = rk * (0.1f * size + rand.nextFloat(0.1f));
     float brv = calcBarrageRank(br);
     if (brv >= 0.1f) {
-      bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
+      bodyBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
       bodyBarrage.barMorphRank = brv;
       rk -= br * 2;
     } else {
@@ -581,6 +595,8 @@ public class CentHeadRoll: CentHead {
     case 2:
       calcBarrageSpeedAndInterval(rk, rk * 0.3f, sp, iv, 3, 24);
       break;
+    default:
+      break;
     }
     bodyBarrage.speedRank = sp;
     bodyBarrage.interval = iv;
@@ -594,20 +610,20 @@ public class CentHeadRoll: CentHead {
       headBarrage = new CentBarrage;
       headBarrage.type = CentBarrage.BasicBarrageType.FRONT;
       float wr = rk * (size * 0.2f + rand.nextFloat(0.2f));
-      float br = rk * rand.nextFloat(0.2f);
+      float br2 = rk * rand.nextFloat(0.2f);
       float wrv = calcBarrageRank(wr);
-      float brv = calcBarrageRank(br);
+      float brv2 = calcBarrageRank(br2);
       if (wrv >= 0.2f) {
-        headBarrage.wayMorphBml = WAY_MORPH_BML[rand.nextInt(WAY_MORPH_BML.length)];
+        headBarrage.wayMorphBml = WAY_MORPH_BML[rand.nextInt(cast(int)(WAY_MORPH_BML.length))];
         headBarrage.wayMorphRank = wrv;
         rk -= wr * 2;
       } else {
         headBarrage.wayMorphBml = null;
       }
-      if (brv >= 0.1f) {
-        headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(BAR_MORPH_BML.length)];
-        headBarrage.barMorphRank = brv;
-        rk -= br * 2;
+      if (brv2 >= 0.1f) {
+        headBarrage.barMorphBml = BAR_MORPH_BML[rand.nextInt(cast(int)(BAR_MORPH_BML.length))];
+        headBarrage.barMorphRank = brv2;
+        rk -= br2 * 2;
       } else {
         headBarrage.barMorphBml = null;
       }
@@ -615,11 +631,11 @@ public class CentHeadRoll: CentHead {
       calcForwardForceAndSlowVelocity(rk, size, ffs, svr);
       forwardForceScale = ffs;
       slowVelocityRatio = svr;
-      float sp;
-      int iv;
-      calcBarrageSpeedAndInterval(rk, rk, sp, iv, 10, 60);
-      headBarrage.speedRank = sp;
-      headBarrage.interval = iv;
+      float sp2;
+      int iv2;
+      calcBarrageSpeedAndInterval(rk, rk, sp2, iv2, 10, 60);
+      headBarrage.speedRank = sp2;
+      headBarrage.interval = iv2;
     }
     _colorR = COLOR_R;
     _colorG = COLOR_G;
@@ -644,7 +660,7 @@ public class CentHead: EnemySpec, JointedEnemySpec, ConnectedParticlesBodyAddabl
   CentBarrage headBarrage, bodyBarrage;
  private:
 
-  invariant {
+  invariant() {
     if (sizeScale) {
       assert(sizeScale.x > 0);
       assert(sizeScale.y > 0);

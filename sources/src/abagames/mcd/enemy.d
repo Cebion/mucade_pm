@@ -43,7 +43,7 @@ public class Enemy: OdeActor {
   EnemyState state;
   Vector3 lastForce;
 
-  invariant {
+  invariant() {
     if (state && state.pos) {
       assert(state.pos.x <>= 0);
       assert(state.pos.y <>= 0);
@@ -64,7 +64,7 @@ public class Enemy: OdeActor {
     rand.setSeed(seed);
   }
 
-  public void init(Object[] args) {
+  public override void init(Object[] args) {
     super.init(true);
     field = cast(Field) args[0];
     particles = cast(ParticlePool) args[1];
@@ -126,7 +126,7 @@ public class Enemy: OdeActor {
     state.joints = joints;
   }
 
-  public void move() {
+  public override void move() {
     if (checkDestroyed())
       return;
     updateState();
@@ -143,7 +143,7 @@ public class Enemy: OdeActor {
     spec.recordLinePoints(state, state.linePoint);
   }
 
-  public void remove() {
+  public override void remove() {
     removeCleaning();
     super.remove();
   }
@@ -202,7 +202,7 @@ public class Enemy: OdeActor {
     }
   }
 
-  public override void collide(OdeActor actor, inout bool hasCollision, inout bool checkFeedback) {
+  public override void collide(OdeActor actor, ref bool hasCollision, ref bool checkFeedback) {
     hasCollision = checkFeedback = false;
     if (!exists)
       return;
@@ -311,7 +311,7 @@ public class Enemy: OdeActor {
     spec.drawShadow(state.linePoint);
   }
 
-  public void draw() {
+  public override void draw() {
     state.linePoint.draw();
     spec.drawSubShape(state);
   }
@@ -422,7 +422,7 @@ public class EnemyState {
   static const int MAX_LINE_POINT_NUM = 24;
   Field field;
 
-  invariant {
+  invariant() {
     assert(pos.x <>= 0);
     assert(pos.y <>= 0);
     assert(pos.z <>= 0);
@@ -537,7 +537,7 @@ public class EnemySpec {
   public void recordLinePoints(EnemyState state, LinePoint lp) {
     glPushMatrix();
     Screen.glTranslate(state.pos);
-    glMultMatrixd(state.rot);
+    glMultMatrixd(state.rot.ptr);
     glScalef(state.sizeScale.x, state.sizeScale.y, state.sizeScale.z);
     lp.beginRecord();
     shape.recordLinePoints(lp);

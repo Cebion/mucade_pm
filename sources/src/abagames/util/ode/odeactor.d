@@ -54,7 +54,7 @@ public class OdeActor: Actor {
     transformedGeomId = new dGeomID[GEOM_NUM];
     if (checkFeedback) {
       contactJoint = new ContactJoint[CONTACT_JOINT_NUM];
-      foreach (inout ContactJoint cj; contactJoint) {
+      foreach (ref ContactJoint cj; contactJoint) {
         cj.pos = new Vector3;
         cj.feedbackForce = new Vector3;
       }
@@ -309,7 +309,7 @@ public class OdeActor: Actor {
     dBodySetRotation(_bodyId, matrix);
   }
 
-  public void collide(OdeActor actor, inout bool hasCollision, inout bool checkFeedback) {
+  public void collide(OdeActor actor, ref bool hasCollision, ref bool checkFeedback) {
     hasCollision = checkFeedback = false;
   }
 

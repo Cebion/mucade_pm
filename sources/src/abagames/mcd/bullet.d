@@ -52,7 +52,7 @@ public class BulletActor: Actor {
   ShapeGroup shape;
   LinePoint linePoint;
 
-  invariant {
+  invariant() {
     if (bullet && bullet.pos) {
       assert(bullet.pos.x <>= 0);
       assert(bullet.pos.y <>= 0);
@@ -184,7 +184,7 @@ public class BulletActor: Actor {
       removeForced();
   }
 
-  public void draw() {
+  public override void draw() {
   }
 
   public void slowdown() {
@@ -215,7 +215,7 @@ public class SimpleBullet: OdeActor {
   LinePoint linePoint;
   int cnt;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);
@@ -296,7 +296,7 @@ public class SimpleBullet: OdeActor {
     }
   }
 
-  public override void collide(OdeActor actor, inout bool hasCollision, inout bool checkFeedback) {
+  public override void collide(OdeActor actor, ref bool hasCollision, ref bool checkFeedback) {
     hasCollision = checkFeedback = false;
     Enemy e = cast(Enemy) actor;
     if (cast(Ship) actor || cast(ShipTail) actor || (e && e.collideBullet)) {
@@ -351,7 +351,7 @@ public class SimpleBullet: OdeActor {
     shape.drawShadow(linePoint);
   }
 
-  public void draw() {
+  public override void draw() {
     if (removeCnt > 0)
       return;
     linePoint.draw();

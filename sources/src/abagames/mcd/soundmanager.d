@@ -16,17 +16,17 @@ private import abagames.util.sdl.sound;
  */
 public class SoundManager: abagames.util.sdl.sound.SoundManager {
  private static:
-  char[][] seFileName =
+  string[] seFileName =
     ["shot.wav", "hit.wav", "bullethit.wav", "destroyed.wav", "addtail.wav",
      "breaktail.wav", "enhancedshot.wav", "shipdestroyed.wav", "extend.wav"];
   int[] seChannel =
     [0, 1, 2, 3, 4, 5, 0, 6, 7];
-  Music[char[]] bgm;
-  Chunk[char[]] se;
-  bool[char[]] seMark;
+  Music[string] bgm;
+  Chunk[string] se;
+  bool[string] seMark;
   Rand rand;
-  char[][] bgmFileName;
-  char[] currentBgm;
+  string[] bgmFileName;
+  string currentBgm;
   int prevBgmIdx;
   int nextIdxMv;
   bool bgmDisabled = false;
@@ -43,23 +43,24 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
   }
 
   private static void loadMusics() {
-    Music[char[]] musics;
-    char[][] files = listdir(Music.dir);
-    foreach (char[] fileName; files) {
-      char[] ext = getExt(fileName);
-      if (ext != "ogg" && ext != "wav")
+    Music[string] musics;
+    auto files = dirEntries(Music.dir, SpanMode.shallow);
+    foreach (string fileName; files) {
+      string ext = extension(fileName);
+      if (ext != ".ogg" && ext != ".wav")
         continue;
+      string fileBaseName = baseName(fileName);
       Music music = new Music();
-      music.load(fileName);
-      bgm[fileName] = music;
-      bgmFileName ~= fileName;
-      Logger.info("Load bgm: " ~ fileName);
+      music.load(fileBaseName);
+      bgm[fileBaseName] = music;
+      bgmFileName ~= fileBaseName;
+      Logger.info("Load bgm: " ~ fileBaseName);
     }
   }
 
   private static void loadChunks() {
     int i = 0;
-    foreach (char[] fileName; seFileName) {
+    foreach (string fileName; seFileName) {
       Chunk chunk = new Chunk();
       chunk.load(fileName, seChannel[i]);
       se[fileName] = chunk;
@@ -69,7 +70,7 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
     }
   }
 
-  public static void playBgm(char[] name) {
+  public static void playBgm(string name) {
     currentBgm = name;
     if (bgmDisabled)
       return;
@@ -78,7 +79,7 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
   }
 
   public static void playBgm() {
-    int bgmIdx = rand.nextInt(bgm.length);
+    int bgmIdx = rand.nextInt(cast(int)(bgm.length));
     nextIdxMv = rand.nextInt(2) * 2 - 1;
     prevBgmIdx = bgmIdx;
     playBgm(bgmFileName[bgmIdx]);
@@ -87,8 +88,8 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
   public static void nextBgm() {
     int bgmIdx = prevBgmIdx + nextIdxMv;
     if (bgmIdx < 0)
-      bgmIdx = bgm.length - 1;
-    else if (bgmIdx >= bgm.length)
+      bgmIdx = cast(int)(bgm.length - 1);
+    else if (bgmIdx >= cast(int)(bgm.length))
       bgmIdx = 0;
     prevBgmIdx = bgmIdx;
     playBgm(bgmFileName[bgmIdx]);
@@ -106,15 +107,15 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
     Music.haltMusic();
   }
 
-  public static void playSe(char[] name) {
+  public static void playSe(string name) {
     if (seDisabled)
       return;
     seMark[name] = true;
   }
 
   public static void playMarkedSes() {
-    char[][] keys = seMark.keys;
-    foreach (char[] key; keys) {
+    string[] keys = seMark.keys;
+    foreach (string key; keys) {
       if (seMark[key]) {
         se[key].play();
         seMark[key] = false;
@@ -123,8 +124,8 @@ public class SoundManager: abagames.util.sdl.sound.SoundManager {
   }
 
   public static void clearMarkedSes() {
-    char[][] keys = seMark.keys;
-    foreach (char[] key; keys)
+    string[] keys = seMark.keys;
+    foreach (string key; keys)
       seMark[key] = false;
   }
 

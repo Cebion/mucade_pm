@@ -33,7 +33,7 @@ public class Barrage {
     parserParam ~= new ParserParam(p, rank, speed);
   }
 
-  public void addBml(char[] bmlDirName, char[] bmlFileName, float rank, float speed) {
+  public void addBml(string bmlDirName, string bmlFileName, float rank, float speed) {
     BulletMLParser *p = BarrageManager.getInstance(bmlDirName, bmlFileName);
     if (!p)
       throw new Error("File not found: " ~ bmlDirName ~ "/" ~ bmlFileName);
@@ -57,35 +57,37 @@ public class Barrage {
  */
 public class BarrageManager {
  private:
-  static BulletMLParserTinyXML *parser[char[]][char[]];
-  static const char[] BARRAGE_DIR_NAME = "barrage";
+  static BulletMLParserTinyXML *parser[string][string];
+  static string BARRAGE_DIR_NAME = "barrage";
 
   public static void load() {
-    char[][] dirs = listdir(BARRAGE_DIR_NAME);
-    foreach (char[] dirName; dirs) {
-      char[][] files = listdir(BARRAGE_DIR_NAME ~ "/" ~ dirName);
-      foreach (char[] fileName; files) {
-        if (getExt(fileName) != "xml")
+    auto dirs = dirEntries(BARRAGE_DIR_NAME, SpanMode.shallow);
+    foreach (string dirName; dirs) {
+      auto files = dirEntries(dirName, SpanMode.shallow);
+      foreach (string fileName; files) {
+        if (extension(fileName) != ".xml")
           continue;
-        parser[dirName][fileName] = loadInstance(dirName, fileName);
+        string dirBaseName = baseName(dirName);
+        string fileBaseName = baseName(fileName);
+        parser[dirBaseName][fileBaseName] = loadInstance(dirBaseName, fileBaseName);
       }
     }
   }
 
-  private static BulletMLParserTinyXML* loadInstance(char[] dirName, char[] fileName) {
-    char[] barrageName = dirName ~ "/" ~ fileName;
+  private static BulletMLParserTinyXML* loadInstance(string dirName, string fileName) {
+    string barrageName = dirName ~ "/" ~ fileName;
     Logger.info("Load BulletML: " ~ barrageName);
-    parser[dirName][fileName] = 
+    parser[dirName][fileName] =
       BulletMLParserTinyXML_new(std.string.toStringz(BARRAGE_DIR_NAME ~ "/" ~ barrageName));
     BulletMLParserTinyXML_parse(parser[dirName][fileName]);
     return parser[dirName][fileName];
   }
 
-  public static BulletMLParserTinyXML* getInstance(char[] dirName, char[] fileName) {
+  public static BulletMLParserTinyXML* getInstance(string dirName, string fileName) {
     return parser[dirName][fileName];
   }
 
-  public static BulletMLParserTinyXML*[] getInstanceList(char[] dirName) {
+  public static BulletMLParserTinyXML*[] getInstanceList(string dirName) {
     BulletMLParserTinyXML *pl[];
     foreach (BulletMLParserTinyXML *p; parser[dirName]) {
       pl ~= p;
@@ -94,7 +96,7 @@ public class BarrageManager {
   }
 
   public static void unload() {
-    foreach (BulletMLParserTinyXML *pa[char[]]; parser) {
+    foreach (BulletMLParserTinyXML *pa[string]; parser) {
       foreach (BulletMLParserTinyXML *p; pa) {
         BulletMLParserTinyXML_delete(p);
       }

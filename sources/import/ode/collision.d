@@ -61,11 +61,11 @@ int dGeomIsEnabled (dGeomID);
 int dCollide (dGeomID o1, dGeomID o2, int flags, dContactGeom *contact,
 	      int skip);
 //void dSpaceCollide (dSpaceID space, void *data, dNearCallback *callback);
-void dSpaceCollide (dSpaceID space, void *data, void (*fp) (void *data, dGeomID o1, dGeomID o2));
+void dSpaceCollide (dSpaceID space, void *data, void function (void *data, dGeomID o1, dGeomID o2) fp);
 //void dSpaceCollide2 (dGeomID o1, dGeomID o2, void *data,
 //		     dNearCallback *callback);
 void dSpaceCollide2 (dGeomID o1, dGeomID o2, void *data,
-		     void (*fp) (void *data, dGeomID o1, dGeomID o2));
+		     void function (void *data, dGeomID o1, dGeomID o2) fp);
 
 /* ************************************************************************ */
 /* standard classes */
@@ -160,12 +160,12 @@ void dCloseODE();
 /* ************************************************************************ */
 /* custom classes */
 
-typedef void dGetAABBFn (dGeomID, dReal aabb[6]);
-typedef int dColliderFn (dGeomID o1, dGeomID o2,
+alias void dGetAABBFn (dGeomID, dReal aabb[6]);
+alias int dColliderFn (dGeomID o1, dGeomID o2,
 			 int flags, dContactGeom *contact, int skip);
-typedef dColliderFn * dGetColliderFnFn (int num);
-typedef void dGeomDtorFn (dGeomID o);
-typedef int dAABBTestFn (dGeomID o1, dGeomID o2, dReal aabb[6]);
+alias dColliderFn * dGetColliderFnFn (int num);
+alias void dGeomDtorFn (dGeomID o);
+alias int dAABBTestFn (dGeomID o1, dGeomID o2, dReal aabb[6]);
 
 struct dGeomClass {
   int bytes;

@@ -42,7 +42,7 @@ public class Field {
   Texture _titleTexture;
   int cnt;
 
-  invariant {
+  invariant() {
     if(eyePos) {
       assert(eyePos.x < 100 && eyePos.x > -100);
       assert(eyePos.y < 100 && eyePos.y > -100);
@@ -296,6 +296,14 @@ public class Field {
 
   public Vector size() {
     return _size;
+  }
+
+  public float size_x() const {
+    return _size.x;
+  }
+
+  public float size_y() const {
+    return _size.y;
   }
 
   public Texture titleTexture() {

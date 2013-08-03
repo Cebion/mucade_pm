@@ -5,7 +5,7 @@
  */
 module abagames.mcd.prefmanager;
 
-private import std.stream;
+private import std.stdio;
 private import abagames.util.prefmanager;
 
 /**
@@ -14,7 +14,7 @@ private import abagames.util.prefmanager;
 public class PrefManager: abagames.util.prefmanager.PrefManager {
  private:
   static const int VERSION_NUM = 10;
-  static const char[] PREF_FILE_NAME = "mcd.prf";
+  static string PREF_FILE_NAME = "mcd.prf";
   PrefData _prefData;
 
   public this() {
@@ -22,16 +22,16 @@ public class PrefManager: abagames.util.prefmanager.PrefManager {
   }
 
   public void load() {
-    auto File fd = new File;
+    scope File fd;
     try {
-      int ver;
+      int read_data[1];
       fd.open(PREF_FILE_NAME);
-      fd.read(ver);
-      if (ver != VERSION_NUM)
-        throw new Error("Wrong version num");
+      fd.rawRead(read_data);
+      if (read_data[0] != VERSION_NUM)
+        throw new Exception("Wrong version num");
       else
         _prefData.load(fd);
-    } catch (Object e) {
+    } catch (Exception e) {
       _prefData.init();
     } finally {
       if (fd.isOpen())
@@ -40,11 +40,15 @@ public class PrefManager: abagames.util.prefmanager.PrefManager {
   }
 
   public void save() {
-    auto File fd = new File;
-    fd.create(PREF_FILE_NAME);
-    fd.write(VERSION_NUM);
-    _prefData.save(fd);
-    fd.close();
+    scope File fd;
+    try {
+      fd.open(PREF_FILE_NAME, "wb");
+      int write_data[1] = [VERSION_NUM];
+      fd.rawWrite(write_data);
+      _prefData.save(fd);
+    } finally {
+      fd.close();
+    }
   }
 
   public PrefData prefData() {
@@ -68,15 +72,17 @@ public class PrefData {
 
   public void load(File fd) {
     for(int i = 0; i < RANKING_NUM; i++) {
-      fd.read(_highScore[i]);
-      fd.read(_time[i]);
+      int read_data[2];
+      fd.rawRead(read_data);
+      _highScore[i] = read_data[0];
+      _time[i] = read_data[1];
     }
   }
 
   public void save(File fd) {
     for(int i = 0; i < RANKING_NUM; i++) {
-      fd.write(_highScore[i]);
-      fd.write(_time[i]);
+      int write_data[2] = [_highScore[i], _time[i]];
+      fd.rawWrite(write_data);
     }
   }
 

@@ -31,7 +31,7 @@ extern(C):
 /* all user defined error functions have this type. error and debug functions
  * should not return.
  */
-typedef void dMessageFunction (int errnum, char *msg, va_list ap);
+alias void dMessageFunction (int errnum, char *msg, va_list ap);
 
 /* set a new error, debug or warning handler. if fn is 0, the default handlers
  * are used.

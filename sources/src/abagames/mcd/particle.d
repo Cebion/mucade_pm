@@ -35,7 +35,7 @@ public class Particle: Actor {
   float decayRatio;
   LinePoint linePoint;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);
@@ -171,7 +171,7 @@ public class ConnectedParticle: Actor {
   ConnectedParticle prevParticle;
   LinePoint linePoint;
 
-  invariant {
+  invariant() {
     if (_pos) {
       assert(_pos.x <>= 0);
       assert(_pos.y <>= 0);
@@ -286,7 +286,7 @@ public class ConnectedParticle: Actor {
     glPushMatrix();
     Screen.glTranslate(_pos);
     if (enableRotate)
-      glMultMatrixd(rot);
+      glMultMatrixd(rot.ptr);
     linePoint.beginRecord();
     linePoint.record(0, 0, 0);
     linePoint.record((prevParticle.pos.x - _pos.x) * 2,
@@ -358,7 +358,7 @@ public class TailParticle: Actor {
   ShapeGroup shape;
   LinePoint linePoint;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);
@@ -483,7 +483,7 @@ public class StarParticle: Actor {
   float size;
   int cnt;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);
@@ -542,7 +542,7 @@ public class NumIndicator: Actor {
   int cnt;
   int num1, num2;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);

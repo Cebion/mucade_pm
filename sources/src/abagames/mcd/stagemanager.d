@@ -7,7 +7,6 @@ module abagames.mcd.stagemanager;
 
 private import std.math;
 private import std.string;
-private import std.stream;
 private import opengl;
 private import ode.ode;
 private import abagames.util.tokenizer;
@@ -48,7 +47,7 @@ public class StageManager {
     this.bullets = bullets;
     this.enemies = enemies;
     rand = new Rand;
-    foreach (inout Appearance a; appearances)
+    foreach (ref Appearance a; appearances)
       a = new Appearance(field, ship, bullets, world, this);
     _blockSpec = new Block(field, ship, bullets, world);
   }
@@ -68,7 +67,7 @@ public class StageManager {
     TailParticle.setRandSeed(randSeed);
     Field.setRandSeed(randSeed);
     SoundManager.setRandSeed(randSeed);
-    dRandSetSeed(randSeed);
+    dRandSetSeed(cast(uint)randSeed);
     clearAppearances();
     cnt = 0;
     rankDownCnt = 0;
@@ -177,6 +176,8 @@ public class StageManager {
         addAppearance(rank, Appearance.EnemyType.TO_AND_FROM, 1, 2, 250);
         addAppearance(rank, Appearance.EnemyType.CHASE, 1, 2, 250);
         appearanceCnt += 2000;
+        break;
+      default:
         break;
       }
     }
@@ -301,6 +302,8 @@ public class Appearance {
       blockAppPos.x = field.size.x * 2;
       blockAppPos.y = field.size.y * 2;
       break;
+    default:
+      break;
     }
     this.num = num;
     this.interval = interval;
@@ -339,6 +342,8 @@ public class Appearance {
           case 2:
             zs *= (2 + rand.nextFloat(2));
             break;
+          default:
+            break;
           }
         }
         if (fabs(blockAppPos.x) >= field.size.x)
@@ -351,6 +356,8 @@ public class Appearance {
                          xs, ys, zs, xs * ys * zs);
         blockAppPos.x += rand.nextSignedFloat(0.5f);
         blockAppPos.y += rand.nextSignedFloat(0.5f);
+        break;
+      default:
         break;
       }
       num--;

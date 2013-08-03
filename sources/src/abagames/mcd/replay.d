@@ -5,7 +5,7 @@
  */
 module abagames.mcd.replay;
 
-private import std.stream;
+private import std.stdio;
 private import abagames.util.sdl.recordableinput;
 private import abagames.util.sdl.twinstickpad;
 private import abagames.mcd.gamemanager;
@@ -15,7 +15,7 @@ private import abagames.mcd.gamemanager;
  */
 public class ReplayData {
  public:
-  static const char[] dir = "replay";
+  static string dir = "replay";
   static const int VERSION_NUM = 10;
   InputRecord!(TwinStickPadState) twinStickPadInputRecord;
   long seed;
@@ -23,27 +23,37 @@ public class ReplayData {
   int time = 0;
  private:
 
-  public void save(char[] fileName) {
-    auto File fd = new File;
-    fd.create(dir ~ "/" ~ fileName);
-    fd.write(VERSION_NUM);
-    fd.write(seed);
-    fd.write(score);
-    fd.write(time);
+  public void save(string fileName) {
+    scope File fd;
+    int write_data_int[1];
+    long write_data_long[1];
+    fd.open(dir ~ "/" ~ fileName, "wb");
+    write_data_int[0] = VERSION_NUM;
+    fd.rawWrite(write_data_int);
+    write_data_long[0] = seed;
+    fd.rawWrite(write_data_long);
+    write_data_int[0] = score;
+    fd.rawWrite(write_data_int);
+    write_data_int[0] = time;
+    fd.rawWrite(write_data_int);
     twinStickPadInputRecord.save(fd);
     fd.close();
   }
 
-  public void load(char[] fileName) {
-    auto File fd = new File;
+  public void load(string fileName) {
+    scope File fd;
+    int read_data_int[1];
+    long read_data_long[1];
     fd.open(dir ~ "/" ~ fileName);
-    int ver;
-    fd.read(ver);
-    if (ver != VERSION_NUM)
-      throw new Error("Wrong version num");
-    fd.read(seed);
-    fd.read(score);
-    fd.read(time);
+    fd.rawRead(read_data_int);
+    if (read_data_int[0] != VERSION_NUM)
+      throw new Exception("Wrong version num");
+    fd.rawRead(read_data_long);
+    seed = read_data_long[0];
+    fd.rawRead(read_data_int);
+    score = read_data_int[0];
+    fd.rawRead(read_data_int);
+    time = read_data_int[0];
     twinStickPadInputRecord = new InputRecord!(TwinStickPadState);
     twinStickPadInputRecord.load(fd);
     fd.close();

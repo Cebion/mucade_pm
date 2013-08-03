@@ -23,21 +23,23 @@ module ode.ode;
 
 /* include *everything* here */
 
-import ode.config;
-import ode.compatibility;
-import ode.common;
-import ode.contact;
-import ode.error;
-import ode.memory;
-import ode.odemath;
-import ode.matrix;
-import ode.timer;
-import ode.rotation;
-import ode.mass;
-import ode.misc;
-import ode.objects;
-//import ode.odecpp;
-import ode.collision_space;
-import ode.collision;
-//import ode.odecpp_collision;
-import ode.export_dif;
+public {
+  import ode.config;
+  import ode.compatibility;
+  import ode.common;
+  import ode.contact;
+  import ode.error;
+  import ode.memory;
+  import ode.odemath;
+  import ode.matrix;
+  import ode.timer;
+  import ode.rotation;
+  import ode.mass;
+  import ode.misc;
+  import ode.objects;
+//  import ode.odecpp;
+  import ode.collision_space;
+  import ode.collision;
+//  import ode.odecpp_collision;
+  import ode.export_dif;
+}

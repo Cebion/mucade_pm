@@ -28,9 +28,9 @@ import ode.config;
 extern(C):
 
 /* function types to allocate and free memory */
-typedef void * dAllocFunction (size_t size);
-typedef void * dReallocFunction (void *ptr, size_t oldsize, size_t newsize);
-typedef void dFreeFunction (void *ptr, size_t size);
+alias void * dAllocFunction (size_t size);
+alias void * dReallocFunction (void *ptr, size_t oldsize, size_t newsize);
+alias void dFreeFunction (void *ptr, size_t size);
 
 /* set new memory management functions. if fn is 0, the default handlers are
  * used. */

@@ -7,6 +7,7 @@ module abagames.util.vector;
 
 private import std.math;
 private import std.string;
+private import std.conv;
 
 /**
  * Vector.
@@ -219,8 +220,8 @@ public class Vector {
     x = tx;
   }
 
-  public char[] toString() {
-    return "(" ~ std.string.toString(x) ~ ", " ~ std.string.toString(y) ~ ")";
+  public override string toString() {
+    return "(" ~ to!string(x) ~ ", " ~ to!string(y) ~ ")";
   }
 }
 
@@ -336,7 +337,7 @@ private:
     z /= a;
   }
 
-  public char[] toString() {
-    return "(" ~ std.string.toString(x) ~ ", " ~ std.string.toString(y) ~ ", " ~ std.string.toString(z) ~ ")";
+  public override string toString() {
+    return "(" ~ to!string(x) ~ ", " ~ to!string(y) ~ ", " ~ to!string(z) ~ ")";
   }
 }

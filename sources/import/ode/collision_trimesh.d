@@ -57,22 +57,22 @@ void dGeomTriMeshDataSet(dTriMeshDataID g, int data_id, void* data);
  * Build TriMesh data with single pricision used in vertex data .
  */
 void dGeomTriMeshDataBuildSingle(dTriMeshDataID g,
-                                 void* Vertices, int VertexStride, int VertexCount, 
+                                 void* Vertices, int VertexStride, int VertexCount,
                                  void* Indices, int IndexCount, int TriStride);
 /* same again with a normals array (used as trimesh-trimesh optimization) */
 void dGeomTriMeshDataBuildSingle1(dTriMeshDataID g,
-                                  void* Vertices, int VertexStride, int VertexCount, 
+                                  void* Vertices, int VertexStride, int VertexCount,
                                   void* Indices, int IndexCount, int TriStride,
                                   void* Normals);
 /*
 * Build TriMesh data with double pricision used in vertex data .
 */
-void dGeomTriMeshDataBuildDouble(dTriMeshDataID g, 
-                                 void* Vertices,  int VertexStride, int VertexCount, 
+void dGeomTriMeshDataBuildDouble(dTriMeshDataID g,
+                                 void* Vertices,  int VertexStride, int VertexCount,
                                  void* Indices, int IndexCount, int TriStride);
 /* same again with a normals array (used as trimesh-trimesh optimization) */
-void dGeomTriMeshDataBuildDouble1(dTriMeshDataID g, 
-                                  void* Vertices,  int VertexStride, int VertexCount, 
+void dGeomTriMeshDataBuildDouble1(dTriMeshDataID g,
+                                  void* Vertices,  int VertexStride, int VertexCount,
                                   void* Indices, int IndexCount, int TriStride,
                                   void* Normals);
 
@@ -91,7 +91,7 @@ void dGeomTriMeshDataBuildSimple1(dTriMeshDataID g,
  * Per triangle callback. Allows the user to say if he wants a collision with
  * a particular triangle.
  */
-typedef int dTriCallback(dGeomID TriMesh, dGeomID RefObject, int TriangleIndex);
+alias int dTriCallback(dGeomID TriMesh, dGeomID RefObject, int TriangleIndex);
 void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback);
 dTriCallback* dGeomTriMeshGetCallback(dGeomID g);
 
@@ -99,7 +99,7 @@ dTriCallback* dGeomTriMeshGetCallback(dGeomID g);
  * Per object callback. Allows the user to get the list of triangles in 1
  * shot. Maybe we should remove this one.
  */
-typedef void dTriArrayCallback(dGeomID TriMesh, dGeomID RefObject, int* TriIndices, int TriCount);
+alias void dTriArrayCallback(dGeomID TriMesh, dGeomID RefObject, int* TriIndices, int TriCount);
 void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback);
 dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g);
 
@@ -109,7 +109,7 @@ dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g);
  * coords. The user can for example sample a texture with alpha transparency
  * to determine if a collision should occur.
  */
-typedef int dTriRayCallback(dGeomID TriMesh, dGeomID Ray, int TriangleIndex, dReal u, dReal v);
+alias int dTriRayCallback(dGeomID TriMesh, dGeomID Ray, int TriangleIndex, dReal u, dReal v);
 void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback);
 dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g);
 

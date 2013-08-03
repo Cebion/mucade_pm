@@ -6,6 +6,7 @@
 module abagames.mcd.title;
 
 private import std.string;
+private import std.conv;
 private import opengl;
 private import abagames.mcd.screen;
 private import abagames.mcd.field;
@@ -70,7 +71,7 @@ public class TitleManager {
       rn = PrefData.RANKING_NUM;
     float y = 120;
     for (int i = 0; i < rn; i++) {
-      char[] rstr;
+      string rstr;
       switch (i) {
       case 0:
         rstr = "1ST";
@@ -82,7 +83,7 @@ public class TitleManager {
         rstr = "3RD";
         break;
       default:
-        rstr = std.string.toString(i + 1) ~ "TH";
+        rstr = to!string(i + 1) ~ "TH";
         break;
       }
       if (i < 9)

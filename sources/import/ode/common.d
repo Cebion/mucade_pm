@@ -103,26 +103,26 @@ dReal dCopySign(dReal a, dReal b) { return (copysignl((a),(b))); }
 
 /* round something up to be a multiple of the EFFICIENT_ALIGNMENT */
 
-int dEFFICIENT_SIZE(int x) { return (((x-1)|(EFFICIENT_ALIGNMENT-1))+1); }
+size_t dEFFICIENT_SIZE(size_t x) { return (((x-1)|(EFFICIENT_ALIGNMENT-1))+1); }
 
 
 /* alloca aligned to the EFFICIENT_ALIGNMENT. note that this can waste
  * up to 15 bytes per allocation, depending on what alloca() returns.
  */
 
-char*  dALLOCA16(int n) 
+char*  dALLOCA16(size_t n)
 { return (cast(char*)dEFFICIENT_SIZE((cast(size_t)(alloca(n+(EFFICIENT_ALIGNMENT-1)))))); }
 
 
 /* internal object types (all prefixed with `dx') */
 
-struct dxWorld;		/* dynamics world */
-struct dxSpace;		/* collision space */
-struct dxBody;		/* rigid body (dynamics object) */
-struct dxGeom;		/* geometry (collision object) */
-struct dxJoint;
-struct dxJointNode;
-struct dxJointGroup;
+alias void dxWorld;		/* dynamics world */
+alias void dxSpace;		/* collision space */
+alias void dxBody;		/* rigid body (dynamics object) */
+alias void dxGeom;		/* geometry (collision object) */
+alias void dxJoint;
+alias void dxJointNode;
+alias void dxJointGroup;
 
 alias dxWorld *dWorldID;
 alias dxSpace *dSpaceID;

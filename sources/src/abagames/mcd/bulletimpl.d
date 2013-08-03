@@ -60,7 +60,7 @@ public class BulletImpl: Bullet {
   public BulletMLParser* getParser() {
     return parserParam[parserIdx].parser;
   }
-  
+
   public void resetParser() {
     parserIdx = 0;
   }
@@ -89,7 +89,7 @@ public class ParserParam {
   float rank;
   float speed;
 
-  invariant {
+  invariant() {
     assert(rank >= 0 && rank <= 1);
     assert(speed > 0 && speed < 10);
   }

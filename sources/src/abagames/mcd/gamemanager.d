@@ -8,7 +8,6 @@ module abagames.mcd.gamemanager;
 private import std.math;
 private import SDL;
 private import opengl;
-private import openglu;
 private import ode.ode;
 private import abagames.util.rand;
 private import abagames.util.sdl.gamemanager;
@@ -38,7 +37,7 @@ private import abagames.mcd.prefmanager;
  */
 public class GameManager: abagames.util.sdl.gamemanager.GameManager {
  private:
-  static const char[] LAST_REPLAY_FILE_NAME = "last.rpl";
+  static string LAST_REPLAY_FILE_NAME = "last.rpl";
   static const int RANK_DOWN_INTERVAL = 60 * 1000;
   static const int BGM_CHANGE_INTERVAL = 2 * 60 * 1000;
   static const enum GameState {
@@ -235,6 +234,8 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
     case GameState.TITLE:
       ship.moveInTitle();
       break;
+    default:
+      break;
     }
     particles.move();
     connectedParticles.move();
@@ -426,6 +427,8 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
     case GameState.TITLE:
       titleManager.draw();
       break;
+    default:
+      break;
     }
   }
 
@@ -442,22 +445,22 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
   private void saveLastReplay() {
     try {
       saveReplay(LAST_REPLAY_FILE_NAME);
-    } catch (Object o) {}
+    } catch (Exception o) {}
   }
 
   private void loadLastReplay() {
     try {
       loadReplay(LAST_REPLAY_FILE_NAME);
-    } catch (Object o) {
+    } catch (Exception o) {
       resetReplay();
     }
   }
 
-  private void saveReplay(char[] fileName) {
+  private void saveReplay(string fileName) {
     _replayData.save(fileName);
   }
 
-  private void loadReplay(char[] fileName) {
+  private void loadReplay(string fileName) {
     _replayData = new ReplayData;
     _replayData.load(fileName);
   }

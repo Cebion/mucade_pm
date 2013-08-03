@@ -58,7 +58,7 @@ public class ShapeGroup: Shape {
     foreach (Shape s; shapes)
       s.recordLinePoints(lp);
   }
-  
+
   public void drawShadow(LinePoint lp) {
     foreach (Shape s; shapes)
       s.drawShadow(lp);
@@ -74,7 +74,7 @@ public abstract class ShapeBase: Shape {
   float mass = 1;
   float shapeBoxScale = 1;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(pos.x <>= 0);
       assert(pos.y <>= 0);
@@ -158,7 +158,7 @@ public class Square: ShapeBase {
     size = new Vector3(sx, sy, sz);
   }
 
-  public void recordLinePoints(LinePoint lp) {
+  public override void recordLinePoints(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     lp.record(-1, -1, 0);
@@ -171,7 +171,7 @@ public class Square: ShapeBase {
     lp.record(-1, -1, 0);
   }
 
-  public void drawShadow(LinePoint lp) {
+  public override void drawShadow(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     if (!lp.setShadowColor())
@@ -224,7 +224,7 @@ public class Sphere: ShapeBase {
     }
   }
 
-  public void recordLinePoints(LinePoint lp) {
+  public override void recordLinePoints(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     lp.record(-1, -1, 0);
@@ -237,7 +237,7 @@ public class Sphere: ShapeBase {
     lp.record(-1, -1, 0);
   }
 
-  public void drawShadow(LinePoint lp) {
+  public override void drawShadow(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     if (!lp.setShadowColor())
@@ -262,7 +262,7 @@ public class Triangle: ShapeBase {
     shapeBoxScale = 1;
   }
 
-  public void recordLinePoints(LinePoint lp) {
+  public override void recordLinePoints(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     lp.record( 0,  1, 0);
@@ -273,7 +273,7 @@ public class Triangle: ShapeBase {
     lp.record( 0,  1, 0);
   }
 
-  public void drawShadow(LinePoint lp) {
+  public override void drawShadow(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     if (!lp.setShadowColor())
@@ -296,7 +296,7 @@ public class Box: ShapeBase {
     size = new Vector3(sx, sy, sz);
   }
 
-  public void recordLinePoints(LinePoint lp) {
+  public override void recordLinePoints(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     lp.record(-1, -1, -1);
@@ -327,7 +327,7 @@ public class Box: ShapeBase {
     lp.record(-1,  1, -1);
   }
 
-  public void drawShadow(LinePoint lp) {
+  public override void drawShadow(LinePoint lp) {
     lp.setPos(pos);
     lp.setSize(size);
     if (!lp.setShadowColor())
@@ -382,7 +382,7 @@ public class LinePoint {
   float _alpha, _alphaTrg;
   bool _enableSpectrumColor;
 
-  invariant {
+  invariant() {
     if (pos) {
       assert(posIdx >= 0);
       assert(histIdx >= 0 && histIdx < HISTORY_MAX);
@@ -407,11 +407,11 @@ public class LinePoint {
     pos = new Vector3[pointMax];
     posHist = new Vector3[][HISTORY_MAX];
     this.field = field;
-    foreach (inout Vector3 p; pos)
+    foreach (ref Vector3 p; pos)
         p = new Vector3;
-    foreach (inout Vector3[] pp; posHist) {
+    foreach (ref Vector3[] pp; posHist) {
       pp = new Vector3[pointMax];
-      foreach (inout Vector3 p; pp)
+      foreach (ref Vector3 p; pp)
         p = new Vector3;
     }
     spectrumColorRTrg = spectrumColorGTrg = spectrumColorBTrg = 0;
@@ -436,7 +436,7 @@ public class LinePoint {
 
   public void beginRecord() {
     posIdx = 0;
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    glGetFloatv(GL_MODELVIEW_MATRIX, m.ptr);
   }
 
   public void setPos(Vector3 p) {
@@ -512,7 +512,7 @@ public class LinePoint {
     glVertex3f(tx, ty, tz);
   }
 
-  private void calcTranslatedPos(inout float tx, inout float ty, inout float tz,
+  private void calcTranslatedPos(ref float tx, ref float ty, ref float tz,
                                  float ox, float oy, float oz) {
     float x = basePos.x + baseSize.x / 2 * ox;
     float y = basePos.y + baseSize.y / 2 * oy;
