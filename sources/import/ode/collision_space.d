@@ -32,7 +32,7 @@ extern(C):
 
 dSpaceID dSimpleSpaceCreate (dSpaceID space);
 dSpaceID dHashSpaceCreate (dSpaceID space);
-dSpaceID dQuadTreeSpaceCreate (dSpaceID space, dVector3 Center, dVector3 Extents, int Depth);
+dSpaceID dQuadTreeSpaceCreate (dSpaceID space, ref dVector3 Center, ref dVector3 Extents, int Depth);
 
 void dSpaceDestroy (dSpaceID);
 

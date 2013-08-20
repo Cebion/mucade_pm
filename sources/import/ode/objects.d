@@ -33,14 +33,14 @@ dWorldID dWorldCreate();
 void dWorldDestroy (dWorldID);
 
 void dWorldSetGravity (dWorldID, dReal x, dReal y, dReal z);
-void dWorldGetGravity (dWorldID, dVector3 gravity);
+void dWorldGetGravity (dWorldID, ref dVector3 gravity);
 void dWorldSetERP (dWorldID, dReal erp);
 dReal dWorldGetERP (dWorldID);
 void dWorldSetCFM (dWorldID, dReal cfm);
 dReal dWorldGetCFM (dWorldID);
 void dWorldStep (dWorldID, dReal stepsize);
 void dWorldImpulseToForce (dWorldID, dReal stepsize,
-			   dReal ix, dReal iy, dReal iz, dVector3 force);
+			   dReal ix, dReal iy, dReal iz, ref dVector3 force);
 
 /* World QuickStep functions */
 
@@ -97,8 +97,8 @@ void  dBodySetData (dBodyID, void *data);
 void *dBodyGetData (dBodyID);
 
 void dBodySetPosition   (dBodyID, dReal x, dReal y, dReal z);
-void dBodySetRotation   (dBodyID, dMatrix3 R);
-void dBodySetQuaternion (dBodyID, dQuaternion q);
+void dBodySetRotation   (dBodyID, ref dMatrix3 R);
+void dBodySetQuaternion (dBodyID, ref dQuaternion q);
 void dBodySetLinearVel  (dBodyID, dReal x, dReal y, dReal z);
 void dBodySetAngularVel (dBodyID, dReal x, dReal y, dReal z);
 dReal * dBodyGetPosition   (dBodyID);
@@ -129,23 +129,23 @@ void dBodySetForce  (dBodyID b, dReal x, dReal y, dReal z);
 void dBodySetTorque (dBodyID b, dReal x, dReal y, dReal z);
 
 void dBodyGetRelPointPos    (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 void dBodyGetRelPointVel    (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 void dBodyGetPointVel       (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 void dBodyGetPosRelPoint    (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 void dBodyVectorToWorld     (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 void dBodyVectorFromWorld   (dBodyID, dReal px, dReal py, dReal pz,
-			     dVector3 result);
+			     ref dVector3 result);
 
 void dBodySetFiniteRotationMode (dBodyID, int mode);
 void dBodySetFiniteRotationAxis (dBodyID, dReal x, dReal y, dReal z);
 
 int dBodyGetFiniteRotationMode (dBodyID);
-void dBodyGetFiniteRotationAxis (dBodyID, dVector3 result);
+void dBodyGetFiniteRotationAxis (dBodyID, ref dVector3 result);
 
 int dBodyGetNumJoints (dBodyID b);
 dJointID dBodyGetJoint (dBodyID, int index);
@@ -212,37 +212,37 @@ void dJointSetAMotorParam (dJointID, int parameter, dReal value);
 void dJointSetAMotorMode (dJointID, int mode);
 void dJointAddAMotorTorques (dJointID, dReal torque1, dReal torque2, dReal torque3);
 
-void dJointGetBallAnchor (dJointID, dVector3 result);
-void dJointGetBallAnchor2 (dJointID, dVector3 result);
-void dJointGetHingeAnchor (dJointID, dVector3 result);
-void dJointGetHingeAnchor2 (dJointID, dVector3 result);
-void dJointGetHingeAxis (dJointID, dVector3 result);
+void dJointGetBallAnchor (dJointID, ref dVector3 result);
+void dJointGetBallAnchor2 (dJointID, ref dVector3 result);
+void dJointGetHingeAnchor (dJointID, ref dVector3 result);
+void dJointGetHingeAnchor2 (dJointID, ref dVector3 result);
+void dJointGetHingeAxis (dJointID, ref dVector3 result);
 dReal dJointGetHingeParam (dJointID, int parameter);
 dReal dJointGetHingeAngle (dJointID);
 dReal dJointGetHingeAngleRate (dJointID);
 dReal dJointGetSliderPosition (dJointID);
 dReal dJointGetSliderPositionRate (dJointID);
-void dJointGetSliderAxis (dJointID, dVector3 result);
+void dJointGetSliderAxis (dJointID, ref dVector3 result);
 dReal dJointGetSliderParam (dJointID, int parameter);
-void dJointGetHinge2Anchor (dJointID, dVector3 result);
-void dJointGetHinge2Anchor2 (dJointID, dVector3 result);
-void dJointGetHinge2Axis1 (dJointID, dVector3 result);
-void dJointGetHinge2Axis2 (dJointID, dVector3 result);
+void dJointGetHinge2Anchor (dJointID, ref dVector3 result);
+void dJointGetHinge2Anchor2 (dJointID, ref dVector3 result);
+void dJointGetHinge2Axis1 (dJointID, ref dVector3 result);
+void dJointGetHinge2Axis2 (dJointID, ref dVector3 result);
 dReal dJointGetHinge2Param (dJointID, int parameter);
 dReal dJointGetHinge2Angle1 (dJointID);
 dReal dJointGetHinge2Angle1Rate (dJointID);
 dReal dJointGetHinge2Angle2Rate (dJointID);
-void dJointGetUniversalAnchor (dJointID, dVector3 result);
-void dJointGetUniversalAnchor2 (dJointID, dVector3 result);
-void dJointGetUniversalAxis1 (dJointID, dVector3 result);
-void dJointGetUniversalAxis2 (dJointID, dVector3 result);
+void dJointGetUniversalAnchor (dJointID, ref dVector3 result);
+void dJointGetUniversalAnchor2 (dJointID, ref dVector3 result);
+void dJointGetUniversalAxis1 (dJointID, ref dVector3 result);
+void dJointGetUniversalAxis2 (dJointID, ref dVector3 result);
 dReal dJointGetUniversalParam (dJointID, int parameter);
 dReal dJointGetUniversalAngle1 (dJointID);
 dReal dJointGetUniversalAngle2 (dJointID);
 dReal dJointGetUniversalAngle1Rate (dJointID);
 dReal dJointGetUniversalAngle2Rate (dJointID);
 int dJointGetAMotorNumAxes (dJointID);
-void dJointGetAMotorAxis (dJointID, int anum, dVector3 result);
+void dJointGetAMotorAxis (dJointID, int anum, ref dVector3 result);
 int dJointGetAMotorAxisRel (dJointID, int anum);
 dReal dJointGetAMotorAngle (dJointID, int anum);
 dReal dJointGetAMotorAngleRate (dJointID, int anum);

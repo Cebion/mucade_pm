@@ -165,8 +165,8 @@ extern(C):
 /*
  * normalize 3x1 and 4x1 vectors (i.e. scale them to unit length)
  */
-void dNormalize3 (dVector3 a);
-void dNormalize4 (dVector4 a);
+void dNormalize3 (ref dVector3 a);
+void dNormalize4 (ref dVector4 a);
 
 
 /*
@@ -177,4 +177,4 @@ void dNormalize4 (dVector4 a);
  * q wont be.
  */
 
-void dPlaneSpace (dVector3 n, dVector3 p, dVector3 q);
+void dPlaneSpace (ref dVector3 n, ref dVector3 p, ref dVector3 q);

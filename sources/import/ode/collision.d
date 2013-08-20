@@ -38,12 +38,12 @@ void *dGeomGetData (dGeomID);
 void dGeomSetBody (dGeomID, dBodyID);
 dBodyID dGeomGetBody (dGeomID);
 void dGeomSetPosition (dGeomID, dReal x, dReal y, dReal z);
-void dGeomSetRotation (dGeomID, dMatrix3 R);
-void dGeomSetQuaternion (dGeomID, dQuaternion);
+void dGeomSetRotation (dGeomID, ref dMatrix3 R);
+void dGeomSetQuaternion (dGeomID, ref dQuaternion);
 dReal * dGeomGetPosition (dGeomID);
 dReal * dGeomGetRotation (dGeomID);
-void dGeomGetQuaternion (dGeomID, dQuaternion result);
-void dGeomGetAABB (dGeomID, dReal aabb[6]);
+void dGeomGetQuaternion (dGeomID, ref dQuaternion result);
+void dGeomGetAABB (dGeomID, ref dReal aabb[6]);
 int dGeomIsSpace (dGeomID);
 dSpaceID dGeomGetSpace (dGeomID);
 int dGeomGetClass (dGeomID);
@@ -105,12 +105,12 @@ dReal dGeomSpherePointDepth (dGeomID sphere, dReal x, dReal y, dReal z);
 
 dGeomID dCreateBox (dSpaceID space, dReal lx, dReal ly, dReal lz);
 void dGeomBoxSetLengths (dGeomID box, dReal lx, dReal ly, dReal lz);
-void dGeomBoxGetLengths (dGeomID box, dVector3 result);
+void dGeomBoxGetLengths (dGeomID box, ref dVector3 result);
 dReal dGeomBoxPointDepth (dGeomID box, dReal x, dReal y, dReal z);
 
 dGeomID dCreatePlane (dSpaceID space, dReal a, dReal b, dReal c, dReal d);
 void dGeomPlaneSetParams (dGeomID plane, dReal a, dReal b, dReal c, dReal d);
-void dGeomPlaneGetParams (dGeomID plane, dVector4 result);
+void dGeomPlaneGetParams (dGeomID plane, ref dVector4 result);
 dReal dGeomPlanePointDepth (dGeomID plane, dReal x, dReal y, dReal z);
 
 dGeomID dCreateCCylinder (dSpaceID space, dReal radius, dReal length);
@@ -123,7 +123,7 @@ void dGeomRaySetLength (dGeomID ray, dReal length);
 dReal dGeomRayGetLength (dGeomID ray);
 void dGeomRaySet (dGeomID ray, dReal px, dReal py, dReal pz,
 		  dReal dx, dReal dy, dReal dz);
-void dGeomRayGet (dGeomID ray, dVector3 start, dVector3 dir);
+void dGeomRayGet (dGeomID ray, ref dVector3 start, ref dVector3 dir);
 
 /*
  * Set/get ray flags that influence ray collision detection.
@@ -146,26 +146,26 @@ int dGeomTransformGetInfo (dGeomID g);
 /* ************************************************************************ */
 /* utility functions */
 
-void dClosestLineSegmentPoints (dVector3 a1, dVector3 a2,
-				dVector3 b1, dVector3 b2,
-				dVector3 cp1, dVector3 cp2);
+void dClosestLineSegmentPoints (ref dVector3 a1, ref dVector3 a2,
+				ref dVector3 b1, ref dVector3 b2,
+				ref dVector3 cp1, ref dVector3 cp2);
 
-int dBoxTouchesBox (dVector3 _p1, dMatrix3 R1,
-		    dVector3 side1, dVector3 _p2,
-		    dMatrix3 R2, dVector3 side2);
+int dBoxTouchesBox (ref dVector3 _p1, ref dMatrix3 R1,
+		    ref dVector3 side1, ref dVector3 _p2,
+		    ref dMatrix3 R2, ref dVector3 side2);
 
-void dInfiniteAABB (dGeomID geom, dReal aabb[6]);
+void dInfiniteAABB (dGeomID geom, ref dReal aabb[6]);
 void dCloseODE();
 
 /* ************************************************************************ */
 /* custom classes */
 
-alias void dGetAABBFn (dGeomID, dReal aabb[6]);
+alias void dGetAABBFn (dGeomID, ref dReal aabb[6]);
 alias int dColliderFn (dGeomID o1, dGeomID o2,
 			 int flags, dContactGeom *contact, int skip);
 alias dColliderFn * dGetColliderFnFn (int num);
 alias void dGeomDtorFn (dGeomID o);
-alias int dAABBTestFn (dGeomID o1, dGeomID o2, dReal aabb[6]);
+alias int dAABBTestFn (dGeomID o1, dGeomID o2, ref dReal aabb[6]);
 
 struct dGeomClass {
   int bytes;

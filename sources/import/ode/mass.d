@@ -54,7 +54,7 @@ void dMassAdjust (dMass *, dReal newmass);
 
 void dMassTranslate (dMass *, dReal x, dReal y, dReal z);
 
-void dMassRotate (dMass *, dMatrix3 R);
+void dMassRotate (dMass *, ref dMatrix3 R);
 
 void dMassAdd (dMass *a, dMass *b);
 

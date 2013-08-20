@@ -27,33 +27,33 @@ import ode.compatibility;
 extern(C):
 
 
-void dRSetIdentity (dMatrix3 R);
+void dRSetIdentity (ref dMatrix3 R);
 
-void dRFromAxisAndAngle (dMatrix3 R, dReal ax, dReal ay, dReal az,
+void dRFromAxisAndAngle (ref dMatrix3 R, dReal ax, dReal ay, dReal az,
 			 dReal angle);
 
-void dRFromEulerAngles (dMatrix3 R, dReal phi, dReal theta, dReal psi);
+void dRFromEulerAngles (ref dMatrix3 R, dReal phi, dReal theta, dReal psi);
 
-void dRFrom2Axes (dMatrix3 R, dReal ax, dReal ay, dReal az,
+void dRFrom2Axes (ref dMatrix3 R, dReal ax, dReal ay, dReal az,
 		  dReal bx, dReal by, dReal bz);
 
-void dRFromZAxis (dMatrix3 R, dReal ax, dReal ay, dReal az);
+void dRFromZAxis (ref dMatrix3 R, dReal ax, dReal ay, dReal az);
 
-void dQSetIdentity (dQuaternion q);
+void dQSetIdentity (ref dQuaternion q);
 
-void dQFromAxisAndAngle (dQuaternion q, dReal ax, dReal ay, dReal az,
+void dQFromAxisAndAngle (ref dQuaternion q, dReal ax, dReal ay, dReal az,
 			 dReal angle);
 
 /* Quaternion multiplication, analogous to the matrix multiplication routines. */
 /* qa = rotate by qc, then qb */
-void dQMultiply0 (dQuaternion qa, dQuaternion qb, dQuaternion qc);
+void dQMultiply0 (ref dQuaternion qa, ref dQuaternion qb, ref dQuaternion qc);
 /* qa = rotate by qc, then by inverse of qb */
-void dQMultiply1 (dQuaternion qa, dQuaternion qb, dQuaternion qc);
+void dQMultiply1 (ref dQuaternion qa, ref dQuaternion qb, ref dQuaternion qc);
 /* qa = rotate by inverse of qc, then by qb */
-void dQMultiply2 (dQuaternion qa, dQuaternion qb, dQuaternion qc);
+void dQMultiply2 (ref dQuaternion qa, ref dQuaternion qb, ref dQuaternion qc);
 /* qa = rotate by inverse of qc, then by inverse of qb */
-void dQMultiply3 (dQuaternion qa, dQuaternion qb, dQuaternion qc);
+void dQMultiply3 (ref dQuaternion qa, ref dQuaternion qb, ref dQuaternion qc);
 
-void dRfromQ (dMatrix3 R, dQuaternion q);
-void dQfromR (dQuaternion q, dMatrix3 R);
-void dDQfromW (dReal dq[4], dVector3 w, dQuaternion q);
+void dRfromQ (ref dMatrix3 R, ref dQuaternion q);
+void dQfromR (ref dQuaternion q, ref dMatrix3 R);
+void dDQfromW (ref dReal dq[4], ref dVector3 w, ref dQuaternion q);

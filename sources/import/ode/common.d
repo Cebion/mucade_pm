@@ -68,7 +68,16 @@ int dAASSERT(int a) { return 0; }
 
 /* floating point data type, vector, matrix and quaternion types */
 
-alias double dReal;
+version(dSINGLE) {
+  alias float dReal;
+  version(dDOUBLE) {
+    static assert(0, "You can only #define dSINGLE or dDOUBLE, not both.");
+  }
+} else version(dDOUBLE) {
+  alias double dReal;
+} else {
+  static assert(0, "You must #define dSINGLE or dDOUBLE");
+}
 
 
 /* round an integer up to a multiple of 4, except that 0 and 1 are unmodified
@@ -87,6 +96,21 @@ alias dReal dQuaternion[4];
 
 /* precision dependent scalar math functions */
 
+version(dSINGLE) {
+
+dReal REAL(dReal x) { return x; }
+dReal dRecip(dReal x) { return (1.0f/(x)); }
+dReal dSqrt(dReal x) { return sqrtf(x); }
+dReal dRecipSqrt(dReal x) { return (1.0f/sqrtf(x)); }
+dReal dSin(dReal x) { return sinf(x); }
+dReal dCos(dReal x) { return cosf(x); }
+dReal dFabs(dReal x) { return fabsf(x); }
+dReal dAtan2(dReal y, dReal x) { return atan2f((y),(x)); }
+dReal dFMod(dReal a, dReal b) { return (fmodf((a),(b))); }
+dReal dCopySign(dReal a, dReal b) { return (copysignf((a),(b))); }
+
+} else version(dDOUBLE) {
+
 dReal REAL(dReal x) { return x; }
 dReal dRecip(dReal x) { return (1.0/(x)); }
 dReal dSqrt(dReal x) { return sqrtl(x); }
@@ -97,6 +121,10 @@ dReal dFabs(dReal x) { return fabsl(x); }
 dReal dAtan2(dReal y, dReal x) { return atan2l((y),(x)); }
 dReal dFMod(dReal a, dReal b) { return (fmodl((a),(b))); }
 dReal dCopySign(dReal a, dReal b) { return (copysignl((a),(b))); }
+
+} else {
+static assert(0, "You must #define dSINGLE or dDOUBLE");
+}
 
 /* utility */
 

@@ -50,7 +50,7 @@ public class World {
     initialized = false;
   }
 
-  public void move(double step) {
+  public void move(dReal step) {
     dSpaceCollide(_space, cast(void*) 0, &nearCallback);
     dWorldQuickStep(world, step);
   }
