@@ -256,14 +256,16 @@ public class OdeActor: Actor {
     dBodyDisable(_bodyId);
   }
 
-  public void setDeg(float d) {
+  public void setDeg(dReal d) {
     dReal[12] matrix;
-    matrix[0] = cos(d);
-    matrix[1] = -sin(d);
+    dReal dCos = cos(d);
+    dReal dSin = sin(d);
+    matrix[0] = dCos;
+    matrix[1] = -dSin;
     matrix[2] = 0;
     matrix[3] = 0;
-    matrix[4] = sin(d);
-    matrix[5] = cos(d);
+    matrix[4] = dSin;
+    matrix[5] = dCos;
     matrix[6] = 0;
     matrix[7] = 0;
     matrix[8] = 0;

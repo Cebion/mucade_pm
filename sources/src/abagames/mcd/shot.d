@@ -48,14 +48,16 @@ public template ShotImpl() {
 
   public void set(Vector3 p, float d) {
     super.set();
-    pos.x = p.x - sin(d) * 0.5f;
-    pos.y = p.y + cos(d) * 0.5f;
+    float dSin = sin(d);
+    float dCos = cos(d);
+    pos.x = p.x - dSin * 0.5f;
+    pos.y = p.y + dCos * 0.5f;
     dBodySetPosition(_bodyId, pos.x, pos.y, 0);
     _deg = d;
     setDeg(d);
     shape.setMass(this);
     shape.setGeom(this, cast(dSpaceID) 0);
-    addForce(-sin(d) * FORCE, cos(d) * FORCE);
+    addForce(-dSin * FORCE, dCos * FORCE);
     cnt = 0;
     removeCnt = 0;
     linePoint.init();
@@ -92,7 +94,9 @@ public template ShotImpl() {
           Particle p = particles.getInstanceForced();
           float d = deg + PI + rand.nextSignedFloat(0.4f);
           float v = 0.2f + rand.nextFloat(0.2f);
-          p.set(pos, -sin(d) * v, cos(d) * v, 0.15f + rand.nextFloat(0.15f),
+          float dSin = sin(d);
+          float dCos = cos(d);
+          p.set(pos, -dSin * v, dCos * v, 0.15f + rand.nextFloat(0.15f),
                 0.5f, 1, 0);
         }
         SoundManager.playSe("hit.wav");

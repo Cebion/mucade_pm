@@ -336,7 +336,9 @@ public class Ship: OdeActor, BulletTarget {
       return;
     if (tailNum <= 0) {
       float id = (SIZE + size) * ShipTail.TAIL_INTERVAL;
-      tails[0].set(_pos.x + sin(deg) * id, _pos.y - cos(deg) * id, _pos.z, deg, size, _bodyId);
+    float degSin = sin(deg);
+    float degCos = cos(deg);
+      tails[0].set(_pos.x + degSin * id, _pos.y - degCos * id, _pos.z, deg, size, _bodyId);
       tailNum++;
       SoundManager.playSe("addtail.wav");
     } else if (tailNum < TAIL_MAX_NUM) {
@@ -363,7 +365,9 @@ public class Ship: OdeActor, BulletTarget {
       Particle p = particles.getInstanceForced();
       float d = rand.nextSignedFloat(PI);
       float v = 0.1f + rand.nextFloat(0.3f);
-      p.set(_pos, -sin(d) * v, cos(d) * v, 0.4f + rand.nextFloat(0.4f),
+      float dSin = sin(d);
+      float dCos = cos(d);
+      p.set(_pos, -dSin * v, dCos * v, 0.4f + rand.nextFloat(0.4f),
             0.25f + rand.nextFloat(0.25f), 0.75f + rand.nextFloat(0.25f), 0.25f + rand.nextFloat(0.25f));
     }
     removeAllTails();
@@ -588,7 +592,9 @@ public class ShipTail: OdeActor {
     dJointSetHingeParam(joint, dParamLoStop, -1);
     dJointSetHingeParam(joint, dParamHiStop, 1);
     dJointAttach(joint, _bodyId, jointedBodyId);
-    dJointSetHingeAnchor(joint, x - sin(deg) * SIZE / 2, y + cos(deg) * SIZE / 2, 0);
+    float degSin = sin(deg);
+    float degCos = cos(deg);
+    dJointSetHingeAnchor(joint, x - degSin * SIZE / 2, y + degCos * SIZE / 2, 0);
     dJointSetHingeAxis(joint, 0, 0, 1);
     linePoint.init();
   }
@@ -636,7 +642,9 @@ public class ShipTail: OdeActor {
     if (fabs(_pos.z) >= 1)
       return false;
     float id = (size.x + sz) * TAIL_INTERVAL;
-    tail.set(_pos.x + sin(deg) * id, _pos.y - cos(deg) * id, _pos.z, deg, sz, _bodyId);
+    float degSin = sin(deg);
+    float degCos = cos(deg);
+    tail.set(_pos.x + degSin * id, _pos.y - degCos * id, _pos.z, deg, sz, _bodyId);
     return true;
   }
 

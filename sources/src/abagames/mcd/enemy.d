@@ -237,7 +237,9 @@ public class Enemy: OdeActor {
         Particle p = particles.getInstanceForced();
         float d = pd + PI + rand.nextSignedFloat(1.0f);
         float v = bv * (1 + rand.nextSignedFloat(0.3f));
-        p.set(cj.pos, -sin(d) * v, cos(d) * v, 0.3f + rand.nextFloat(0.3f),
+        float dSin = sin(d);
+        float dCos = cos(d);
+        p.set(cj.pos, -dSin * v, dCos * v, 0.3f + rand.nextFloat(0.3f),
               0.3f, 0.3f + rand.nextFloat(0.3f), 0.4f + rand.nextFloat(0.4f), 30 + rand.nextInt(10));
       }
     }

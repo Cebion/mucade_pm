@@ -124,7 +124,9 @@ public template CentMoveImpl() {
       }
       float sd = atan2(-ship.pos.x + state.pos.x, ship.pos.y - state.pos.y);
       float sf = FORWARD_FORCE_BASE * state.forwardForceScale * 0.16f;
-      enemy.addForce(-sin(sd) * sf, cos(sd) * sf);
+      float sdSin = sin(sd);
+      float sdCos = cos(sd);
+      enemy.addForce(-sdSin * sf, sdCos * sf);
       break;
     default:
       break;
@@ -727,8 +729,10 @@ public class CentHead: EnemySpec, JointedEnemySpec, ConnectedParticlesBodyAddabl
       } else {
         app &= e.set(bodySpec, ex, ey, z, deg, sizeScale, massScale, true);
       }
-      ex +=  sin(deg) * sizeScale.x * SIZE * 1.1f;
-      ey += -cos(deg) * sizeScale.x * SIZE * 1.1f;
+      float degSin = sin(deg);
+      float degCos = cos(deg);
+      ex +=  degSin * sizeScale.x * SIZE * 1.1f;
+      ey += -degCos * sizeScale.x * SIZE * 1.1f;
     }
     if (!app) {
       foreach (Enemy e; je)

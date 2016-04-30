@@ -221,8 +221,10 @@ public class ConnectedParticle: Actor {
     _pos.x = x;
     _pos.y = y;
     _pos.z = z;
-    _vel.x = -sin(d) * s;
-    _vel.y = cos(d) * s;
+    float dSin = sin(d);
+    float dCos = cos(d);
+    _vel.x = -dSin * s;
+    _vel.y = dCos * s;
     _vel.z = 0;
     enableRotate = false;
     cnt = c;
@@ -267,8 +269,10 @@ public class ConnectedParticle: Actor {
       float lo = ds - baseLength;
       if (lo > 0.01f && ds > 0.01f) {
         float d = atan2(prevParticle.pos.x - pos.x, prevParticle.pos.y - pos.y);
-        float ax = sin(d) * lo * SPRING_CONSTANT;
-        float ay = cos(d) * lo * SPRING_CONSTANT;
+        float dSin = sin(d);
+        float dCos = cos(d);
+        float ax = dSin * lo * SPRING_CONSTANT;
+        float ay = dCos * lo * SPRING_CONSTANT;
         _vel.x += ax;
         _vel.y += ay;
         prevParticle.vel.x -= ax;

@@ -167,11 +167,13 @@ public class BulletActor: Actor {
       removeForced();
       return;
     }
+    float degSin = sin(bullet.deg);
+    float degCos = cos(bullet.deg);
     float mx =
-      (-sin(bullet.deg) * bullet.speed + bullet.acc.x) *
+      (-degSin * bullet.speed + bullet.acc.x) *
         bullet.getSpeedRank() * bullet.xReverse;
     float my =
-      (cos(bullet.deg) * bullet.speed - bullet.acc.y) *
+      (degCos * bullet.speed - bullet.acc.y) *
         bullet.getSpeedRank() * bullet.yReverse;
     bullet.pos.x += mx;
     bullet.pos.y += my;
@@ -258,8 +260,10 @@ public class SimpleBullet: OdeActor {
     speed = sp;
     shape.setMass(this);
     shape.setGeom(this, cast(dSpaceID) 0);
-    firstForce.x = -sin(d) * sp * FORCE;
-    firstForce.y = cos(d) * sp * FORCE;
+    float dSin = sin(d);
+    float dCos = cos(d);
+    firstForce.x = -dSin * sp * FORCE;
+    firstForce.y = dCos * sp * FORCE;
     addForce(firstForce.x, firstForce.y);
     removeCnt = 0;
     cnt = 0;
@@ -306,7 +310,9 @@ public class SimpleBullet: OdeActor {
           Particle p = particles.getInstanceForced();
           float d = deg + PI + rand.nextSignedFloat(0.5f);
           float v = speed * (0.5f + rand.nextFloat(0.5f));
-          p.set(pos, -sin(d) * v, cos(d) * v, 0.2f + rand.nextFloat(0.2f),
+          float dSin = sin(d);
+          float dCos = cos(d);
+          p.set(pos, -dSin * v, dCos * v, 0.2f + rand.nextFloat(0.2f),
                 1, 0.5f, 0.5f);
         }
         if (cast(Ship) actor || cast(ShipTail) actor) {
@@ -333,7 +339,9 @@ public class SimpleBullet: OdeActor {
     Particle p = particles.getInstanceForced();
     float d = deg;
     float v = speed;
-    p.set(pos, -sin(d) * v, cos(d) * v, 0.2f, 0.9f, 0.6f, 0.3f);
+    float dSin = sin(d);
+    float dCos = cos(d);
+    p.set(pos, -dSin * v, dCos * v, 0.2f, 0.9f, 0.6f, 0.3f);
     remove();
     if (!ship.inRestartBulletDisap)
       gameManager.addScore(10);

@@ -215,8 +215,10 @@ public class Vector {
   }
 
   public void roll(float d) {
-    float tx = x * cos(d) - y * sin(d);
-    y = x * sin(d) + y * cos(d);
+    float dCos = cos(d);
+    float dSin = sin(d);
+    float tx = x * dCos - y * dSin;
+    y = x * dSin + y * dCos;
     x = tx;
   }
 
@@ -250,20 +252,26 @@ private:
   }
 
   public void rollX(float d) {
-    float ty = y * cos(d) - z * sin(d);
-    z = y * sin(d) + z * cos(d);
+    float dCos = cos(d);
+    float dSin = sin(d);
+    float ty = y * dCos - z * dSin;
+    z = y * dSin + z * dCos;
     y = ty;
   }
 
   public void rollY(float d) {
-    float tx = x * cos(d) - z * sin(d);
-    z = x * sin(d) + z * cos(d);
+    float dCos = cos(d);
+    float dSin = sin(d);
+    float tx = x * dCos - z * dSin;
+    z = x * dSin + z * dCos;
     x = tx;
   }
 
   public void rollZ(float d) {
-    float tx = x * cos(d) - y * sin(d);
-    y = x * sin(d) + y * cos(d);
+    float dCos = cos(d);
+    float dSin = sin(d);
+    float tx = x * dCos - y * dSin;
+    y = x * dSin + y * dCos;
     x = tx;
   }
 
