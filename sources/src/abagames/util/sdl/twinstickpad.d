@@ -37,7 +37,11 @@ public class TwinStickPad: Input {
     if (st == null) {
       if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
         return null;
-      stick = SDL_JoystickOpen(0);
+      version (PANDORA) {
+        stick = null;
+      } else {
+        stick = SDL_JoystickOpen(0);
+      }
     } else {
       stick = st;
     }
