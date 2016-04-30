@@ -11,6 +11,7 @@ private import abagames.util.actor;
 private import abagames.util.vector;
 private import abagames.util.rand;
 private import abagames.util.math;
+private import abagames.util.ode.odeactor;
 private import abagames.mcd.shape;
 private import abagames.mcd.field;
 private import abagames.mcd.screen;
@@ -162,7 +163,7 @@ public class ConnectedParticle: Actor {
   Field field;
   Vector3 _pos;
   Vector3 _vel;
-  GLdouble rot[16];
+  GLreal rot[16];
   bool enableRotate;
   int cnt;
   float decayRatio;
@@ -241,9 +242,8 @@ public class ConnectedParticle: Actor {
     _exists = true;
   }
 
-  public void setRot(GLdouble[16] r) {
-    for (int i = 0; i < 16; i++)
-      rot[i] = r[i];
+  public void setRot(GLreal[16] r) {
+    rot[] = r[];
     enableRotate = true;
   }
 
@@ -286,7 +286,7 @@ public class ConnectedParticle: Actor {
     glPushMatrix();
     Screen.glTranslate(_pos);
     if (enableRotate)
-      glMultMatrixd(rot.ptr);
+      glMultMatrixr(rot.ptr);
     linePoint.beginRecord();
     linePoint.record(0, 0, 0);
     linePoint.record((prevParticle.pos.x - _pos.x) * 2,

@@ -12,6 +12,15 @@ private import abagames.util.actor;
 private import abagames.util.vector;
 private import abagames.util.ode.world;
 
+version(dSINGLE) {
+  alias GLfloat GLreal;
+  alias glMultMatrixf glMultMatrixr;
+} else version(dDOUBLE) {
+  alias GLdouble GLreal;
+  alias glMultMatrixd glMultMatrixr;
+}
+
+
 /**
  * Actor working with ODE.
  */
@@ -272,7 +281,7 @@ public class OdeActor: Actor {
     return (d1 + d2) / 2;
   }
 
-  public void getRot(GLdouble[] matrix) {
+  public void getRot(GLreal[] matrix) {
     dReal* rot = dBodyGetRotation(_bodyId);
     matrix[0]= rot[0];
     matrix[1]= rot[4];
@@ -292,7 +301,7 @@ public class OdeActor: Actor {
     matrix[15]= 1;
   }
 
-  public void setRot(GLdouble[] rot) {
+  public void setRot(GLreal[] rot) {
     dReal[12] matrix;
     matrix[0]= rot[0];
     matrix[1]= rot[4];

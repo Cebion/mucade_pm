@@ -395,7 +395,7 @@ public class EnemyState {
  public:
   Vector3 pos;
   float deg;
-  GLdouble rot[16];
+  GLreal rot[16];
   dReal[3] linearVel;
   dReal[3] angularVel;
   Vector3 sizeScale;
@@ -537,7 +537,7 @@ public class EnemySpec {
   public void recordLinePoints(EnemyState state, LinePoint lp) {
     glPushMatrix();
     Screen.glTranslate(state.pos);
-    glMultMatrixd(state.rot.ptr);
+    glMultMatrixr(state.rot.ptr);
     glScalef(state.sizeScale.x, state.sizeScale.y, state.sizeScale.z);
     lp.beginRecord();
     shape.recordLinePoints(lp);

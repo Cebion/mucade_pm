@@ -62,7 +62,7 @@ public class Ship: OdeActor, BulletTarget {
   ShotPool shots;
   float deg;
   float trgDeg;
-  GLdouble rot[16];
+  GLreal rot[16];
   int restartCnt;
   int fireCnt;
   float fireInterval;
@@ -432,7 +432,7 @@ public class Ship: OdeActor, BulletTarget {
   public void recordLinePoints() {
     glPushMatrix();
     Screen.glTranslate(_pos);
-    glMultMatrixd(rot.ptr);
+    glMultMatrixr(rot.ptr);
     linePoint.beginRecord();
     shape.recordLinePoints(linePoint);
     linePoint.endRecord();
@@ -453,7 +453,7 @@ public class Ship: OdeActor, BulletTarget {
     linePoint.draw();
     glPushMatrix();
     Screen.glTranslate(_pos);
-    glMultMatrixd(rot.ptr);
+    glMultMatrixr(rot.ptr);
     subShape.draw();
     glPopMatrix();
   }
@@ -514,7 +514,7 @@ public class ShipTail: OdeActor {
   static Rand rand;
   Vector3 _pos;
   float deg;
-  GLdouble rot[16];
+  GLreal rot[16];
   Vector3 size;
   Field field;
   Ship ship;
@@ -643,7 +643,7 @@ public class ShipTail: OdeActor {
   public void recordLinePoints() {
     glPushMatrix();
     Screen.glTranslate(_pos);
-    glMultMatrixd(rot.ptr);
+    glMultMatrixr(rot.ptr);
     glScalef(size.x, size.y, size.z);
     linePoint.beginRecord();
     shape.recordLinePoints(linePoint);

@@ -214,7 +214,7 @@ public template CentMoveImpl() {
     if (state.isHead) {
       glPushMatrix();
       Screen.glTranslate(state.pos);
-      glMultMatrixd(state.rot.ptr);
+      glMultMatrixr(state.rot.ptr);
       glScalef(state.sizeScale.x, state.sizeScale.y, state.sizeScale.z);
       subShape.draw();
       glPopMatrix();
