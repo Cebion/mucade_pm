@@ -5,6 +5,21 @@
  */
 module abagames.mcd.shape;
 
+version (USE_SIMD) {
+  private import std.math;
+  extern (C) {
+    void diffuseSpectrumSimdHelper(float *posHist, int posIdx, float dfr);
+  }
+  enum{
+    X = 0,
+    Y,
+    Z,
+    A,
+    XY = 2,
+    XYZ = 3,
+    XYZA = 4,
+  }
+}
 private import opengl;
 private import ode.ode;
 private import abagames.util.vector;
@@ -370,8 +385,13 @@ public class LinePoint {
  private:
   static const int HISTORY_MAX = 40;
   Field field;
-  Vector3[] pos;
-  Vector3[][] posHist;
+  version (USE_SIMD) {
+    float[] pos;
+    float[][HISTORY_MAX] posHist;
+  } else {
+    Vector3[] pos;
+    Vector3[][] posHist;
+  }
   int posIdx, histIdx;
   Vector3 basePos, baseSize;
   GLfloat[16] m;
@@ -395,24 +415,37 @@ public class LinePoint {
       assert(spectrumColorG >= 0 && spectrumColorG <= 1);
       assert(spectrumColorB >= 0 && spectrumColorB <= 1);
       for (int i = 0; i < posIdx; i++) {
-        assert(pos[i].x <>= 0);
-        assert(pos[i].y <>= 0);
-        assert(pos[i].z <>= 0);
+        version (USE_SIMD) {
+          assert(pos[i*XYZA+X] <>= 0);
+          assert(pos[i*XYZA+Y] <>= 0);
+          assert(pos[i*XYZA+Z] <>= 0);
+        } else {
+          assert(pos[i].x <>= 0);
+          assert(pos[i].y <>= 0);
+          assert(pos[i].z <>= 0);
+        }
       }
     }
   }
 
   public this(Field field, int pointMax = 8) {
     init();
-    pos = new Vector3[pointMax];
-    posHist = new Vector3[][HISTORY_MAX];
     this.field = field;
-    foreach (ref Vector3 p; pos)
-        p = new Vector3;
-    foreach (ref Vector3[] pp; posHist) {
-      pp = new Vector3[pointMax];
-      foreach (ref Vector3 p; pp)
-        p = new Vector3;
+    version (USE_SIMD) {
+      pos.length = pointMax*XYZA;
+      foreach (ref float[] pp; posHist) {
+        pp.length = pointMax*XYZA;
+      }
+    } else {
+      pos = new Vector3[pointMax];
+      posHist = new Vector3[][HISTORY_MAX];
+      foreach (ref Vector3 p; pos)
+          p = new Vector3;
+      foreach (ref Vector3[] pp; posHist) {
+        pp = new Vector3[pointMax];
+        foreach (ref Vector3 p; pp)
+          p = new Vector3;
+      }
     }
     spectrumColorRTrg = spectrumColorGTrg = spectrumColorBTrg = 0;
     spectrumLength = 0;
@@ -450,9 +483,15 @@ public class LinePoint {
   public void record(float ox, float oy, float oz) {
     float tx, ty, tz;
     calcTranslatedPos(tx, ty, tz, ox, oy, oz);
-    pos[posIdx].x = tx;
-    pos[posIdx].y = ty;
-    pos[posIdx].z = tz;
+    version (USE_SIMD) {
+      pos[posIdx*XYZA+X] = tx;
+      pos[posIdx*XYZA+Y] = ty;
+      pos[posIdx*XYZA+Z] = tz;
+    } else {
+      pos[posIdx].x = tx;
+      pos[posIdx].y = ty;
+      pos[posIdx].z = tz;
+    }
     posIdx++;
   }
 
@@ -463,17 +502,25 @@ public class LinePoint {
     if (isFirstRecord) {
       isFirstRecord = false;
       for (int j = 0; j < HISTORY_MAX; j++) {
-        for (int i = 0; i < posIdx; i++) {
-          posHist[j][i].x = pos[i].x;
-          posHist[j][i].y = pos[i].y;
-          posHist[j][i].z = pos[i].z;
+        version (USE_SIMD) {
+          posHist[j][0 .. posIdx*XYZA] = pos[0 .. posIdx*XYZA];
+        } else {
+          for (int i = 0; i < posIdx; i++) {
+            posHist[j][i].x = pos[i].x;
+            posHist[j][i].y = pos[i].y;
+            posHist[j][i].z = pos[i].z;
+          }
         }
       }
     } else {
-      for (int i = 0; i < posIdx; i++) {
-        posHist[histIdx][i].x = pos[i].x;
-        posHist[histIdx][i].y = pos[i].y;
-        posHist[histIdx][i].z = pos[i].z;
+      version (USE_SIMD) {
+        posHist[histIdx][0 .. posIdx*XYZA] = pos[0 .. posIdx*XYZA];
+      } else {
+        for (int i = 0; i < posIdx; i++) {
+          posHist[histIdx][i].x = pos[i].x;
+          posHist[histIdx][i].y = pos[i].y;
+          posHist[histIdx][i].z = pos[i].z;
+        }
       }
     }
     diffuseSpectrum();
@@ -492,16 +539,20 @@ public class LinePoint {
   private void diffuseSpectrum() {
     const float dfr = 0.01f;
     for (int j = 0; j < HISTORY_MAX; j++) {
-      for (int i = 0; i < posIdx; i += 2) {
-        float ox = posHist[j][i].x - posHist[j][i+1].x;
-        float oy = posHist[j][i].y - posHist[j][i+1].y;
-        float oz = posHist[j][i].z - posHist[j][i+1].z;
-        posHist[j][i].x += ox * dfr;
-        posHist[j][i].y += oy * dfr;
-        posHist[j][i].z += oz * dfr;
-        posHist[j][i+1].x -= ox * dfr;
-        posHist[j][i+1].y -= oy * dfr;
-        posHist[j][i+1].z -= oz * dfr;
+      version (USE_SIMD) {
+        diffuseSpectrumSimdHelper(posHist[j].ptr, posIdx, dfr);
+      } else {
+        for (int i = 0; i < posIdx; i += 2) {
+          float ox = posHist[j][i].x - posHist[j][i+1].x;
+          float oy = posHist[j][i].y - posHist[j][i+1].y;
+          float oz = posHist[j][i].z - posHist[j][i+1].z;
+          posHist[j][i].x += ox * dfr;
+          posHist[j][i].y += oy * dfr;
+          posHist[j][i].z += oz * dfr;
+          posHist[j][i+1].x -= ox * dfr;
+          posHist[j][i+1].y -= oy * dfr;
+          posHist[j][i+1].z -= oz * dfr;
+        }
       }
     }
   }
@@ -533,9 +584,15 @@ public class LinePoint {
     if (isFirstRecord)
       return;
     glBegin(GL_LINES);
-    for (int i = 0; i < posIdx; i += 2)
-      Screen.drawLine(pos[i].x, pos[i].y, pos[i].z,
-                      pos[i + 1].x, pos[i + 1].y, pos[i + 1].z, _alpha);
+    for (int i = 0; i < posIdx; i += 2) {
+      version (USE_SIMD) {
+        Screen.drawLine(pos[i*XYZA+X], pos[i*XYZA+Y], pos[i*XYZA+Z],
+                        pos[(i + 1)*XYZA+X], pos[(i + 1)*XYZA+Y], pos[(i + 1)*XYZA+Z], _alpha);
+      } else {
+        Screen.drawLine(pos[i].x, pos[i].y, pos[i].z,
+                        pos[i + 1].x, pos[i + 1].y, pos[i + 1].z, _alpha);
+      }
+    }
     glEnd();
   }
 
@@ -546,9 +603,31 @@ public class LinePoint {
       return;
     Screen.setColor(spectrumColorR, spectrumColorG, spectrumColorB);
     glBegin(GL_LINE_STRIP);
-    for (int i = 0; i < posIdx; i++)
-      glVertex3f(pos[i].x, pos[i].y, pos[i].z);
+    for (int i = 0; i < posIdx; i++) {
+      version (USE_SIMD) {
+        glVertex3f(pos[i*XYZA+X], pos[i*XYZA+Y], pos[i*XYZA+Z]);
+      } else {
+        glVertex3f(pos[i].x, pos[i].y, pos[i].z);
+      }
+    }
     glEnd();
+  }
+
+  version (USE_SIMD) {
+    private float vectorDist(float* v1, float* v2) {
+      float ax = fabs(v1[X] - v2[X]);
+      float ay = fabs(v1[Y] - v2[Y]);
+      float az = fabs(v1[Z] - v2[Z]);
+      float axy;
+      if (ax > ay)
+        axy = ax + ay / 2;
+      else
+        axy = ay + ax / 2;
+      if (axy > az)
+        return axy + az / 2;
+      else
+        return az + axy / 2;
+    }
   }
 
   public void drawSpectrum() {
@@ -572,12 +651,23 @@ public class LinePoint {
         nhif += HISTORY_MAX;
       int hi = cast(int) hif;
       int nhi = cast(int) nhif;
-      if (posHist[hi][0].dist(posHist[nhi][0]) < 8) {
-        for (int i = 0; i < posIdx; i += 2) {
-          glVertex3f(posHist[hi][i].x, posHist[hi][i].y, posHist[hi][i].z);
-          glVertex3f(posHist[hi][i+1].x, posHist[hi][i+1].y, posHist[hi][i+1].z);
-          glVertex3f(posHist[nhi][i+1].x, posHist[nhi][i+1].y, posHist[nhi][i+1].z);
-          glVertex3f(posHist[nhi][i].x, posHist[nhi][i].y, posHist[nhi][i].z);
+      version (USE_SIMD) {
+        if (vectorDist(posHist[hi].ptr, posHist[nhi].ptr) < 8) {
+          for (int i = 0; i < posIdx; i += 2) {
+            glVertex3f(posHist[hi][i*XYZA+X], posHist[hi][i*XYZA+Y], posHist[hi][i*XYZA+Z]);
+            glVertex3f(posHist[hi][(i+1)*XYZA+X], posHist[hi][(i+1)*XYZA+Y], posHist[hi][(i+1)*XYZA+Z]);
+            glVertex3f(posHist[nhi][(i+1)*XYZA+X], posHist[nhi][(i+1)*XYZA+Y], posHist[nhi][(i+1)*XYZA+Z]);
+            glVertex3f(posHist[nhi][i*XYZA+X], posHist[nhi][i*XYZA+Y], posHist[nhi][i*XYZA+Z]);
+          }
+        }
+      } else {
+        if (posHist[hi][0].dist(posHist[nhi][0]) < 8) {
+          for (int i = 0; i < posIdx; i += 2) {
+            glVertex3f(posHist[hi][i].x, posHist[hi][i].y, posHist[hi][i].z);
+            glVertex3f(posHist[hi][i+1].x, posHist[hi][i+1].y, posHist[hi][i+1].z);
+            glVertex3f(posHist[nhi][i+1].x, posHist[nhi][i+1].y, posHist[nhi][i+1].z);
+            glVertex3f(posHist[nhi][i].x, posHist[nhi][i].y, posHist[nhi][i].z);
+          }
         }
       }
       al *= 0.88f * spectrumLength;
