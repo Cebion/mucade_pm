@@ -62,11 +62,11 @@ public class Ship: OdeActor, BulletTarget {
   ShotPool shots;
   float deg;
   float trgDeg;
-  GLreal rot[16];
+  GLreal[16] rot;
   int restartCnt;
   int fireCnt;
   float fireInterval;
-  ShipTail tails[TAIL_MAX_NUM];
+  ShipTail[TAIL_MAX_NUM] tails;
   int tailNum;
   int enhancedShotCnt;
   ShapeGroup shape;
@@ -84,8 +84,8 @@ public class Ship: OdeActor, BulletTarget {
       assert(_pos.x <  field.size_x * 100);
       assert(_pos.y > -field.size_y * 100);
       assert(_pos.y <  field.size_y * 100);
-      assert(_pos.z <>= 0);
-      assert(deg <>= 0);
+      assert(!std.math.isNaN(_pos.z));
+      assert(!std.math.isNaN(deg));
     }
   }
 
@@ -518,7 +518,7 @@ public class ShipTail: OdeActor {
   static Rand rand;
   Vector3 _pos;
   float deg;
-  GLreal rot[16];
+  GLreal[16] rot;
   Vector3 size;
   Field field;
   Ship ship;
@@ -531,10 +531,10 @@ public class ShipTail: OdeActor {
 
   invariant() {
     if (_pos) {
-      assert(_pos.x <>= 0);
-      assert(_pos.y <>= 0);
-      assert(_pos.z <>= 0);
-      assert(deg <>= 0);
+      assert(!std.math.isNaN(_pos.x));
+      assert(!std.math.isNaN(_pos.y));
+      assert(!std.math.isNaN(_pos.z));
+      assert(!std.math.isNaN(deg));
       assert(size.x >= 0);
       assert(size.y >= 0);
       assert(size.z >= 0);

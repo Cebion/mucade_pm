@@ -21,7 +21,7 @@
  *************************************************************************/
 module ode.timer;
 
-import std.c.stdio;
+import core.stdc.stdio;
 import ode.config;
 
 extern(C):
@@ -30,7 +30,7 @@ extern(C):
 
 struct dStopwatch {
   double time;			/* total clock count */
-  uint cc[2];		/* clock count since last `start' */
+  uint[2] cc;		/* clock count since last `start' */
 };
 
 void dStopwatchReset (dStopwatch *);

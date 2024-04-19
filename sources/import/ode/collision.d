@@ -43,7 +43,7 @@ void dGeomSetQuaternion (dGeomID, ref dQuaternion);
 dReal * dGeomGetPosition (dGeomID);
 dReal * dGeomGetRotation (dGeomID);
 void dGeomGetQuaternion (dGeomID, ref dQuaternion result);
-void dGeomGetAABB (dGeomID, ref dReal aabb[6]);
+void dGeomGetAABB (dGeomID, ref dReal[6] aabb);
 int dGeomIsSpace (dGeomID);
 dSpaceID dGeomGetSpace (dGeomID);
 int dGeomGetClass (dGeomID);
@@ -154,18 +154,18 @@ int dBoxTouchesBox (ref dVector3 _p1, ref dMatrix3 R1,
 		    ref dVector3 side1, ref dVector3 _p2,
 		    ref dMatrix3 R2, ref dVector3 side2);
 
-void dInfiniteAABB (dGeomID geom, ref dReal aabb[6]);
+void dInfiniteAABB (dGeomID geom, ref dReal[6] aabb);
 void dCloseODE();
 
 /* ************************************************************************ */
 /* custom classes */
 
-alias void dGetAABBFn (dGeomID, ref dReal aabb[6]);
+alias void dGetAABBFn (dGeomID, ref dReal[6] aabb);
 alias int dColliderFn (dGeomID o1, dGeomID o2,
 			 int flags, dContactGeom *contact, int skip);
 alias dColliderFn * dGetColliderFnFn (int num);
 alias void dGeomDtorFn (dGeomID o);
-alias int dAABBTestFn (dGeomID o1, dGeomID o2, ref dReal aabb[6]);
+alias int dAABBTestFn (dGeomID o1, dGeomID o2, ref dReal[6] aabb);
 
 struct dGeomClass {
   int bytes;

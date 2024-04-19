@@ -5,8 +5,8 @@
  */
 module abagames.mcd.shape;
 
+private import std.math;
 version (USE_SIMD) {
-  private import std.math;
   extern (C) {
     void diffuseSpectrumSimdHelper(float *posHist, int posIdx, float dfr);
   }
@@ -91,9 +91,9 @@ public abstract class ShapeBase: Shape {
 
   invariant() {
     if (pos) {
-      assert(pos.x <>= 0);
-      assert(pos.y <>= 0);
-      assert(pos.z <>= 0);
+      assert(!std.math.isNaN(pos.x));
+      assert(!std.math.isNaN(pos.y));
+      assert(!std.math.isNaN(pos.z));
       assert(size.x >= 0);
       assert(size.y >= 0);
       assert(size.z >= 0);
@@ -416,13 +416,13 @@ public class LinePoint {
       assert(spectrumColorB >= 0 && spectrumColorB <= 1);
       for (int i = 0; i < posIdx; i++) {
         version (USE_SIMD) {
-          assert(pos[i*XYZA+X] <>= 0);
-          assert(pos[i*XYZA+Y] <>= 0);
-          assert(pos[i*XYZA+Z] <>= 0);
+          assert(!std.math.isNaN(pos[i*XYZA+X]));
+          assert(!std.math.isNaN(pos[i*XYZA+Y]));
+          assert(!std.math.isNaN(pos[i*XYZA+Z]));
         } else {
-          assert(pos[i].x <>= 0);
-          assert(pos[i].y <>= 0);
-          assert(pos[i].z <>= 0);
+          assert(!std.math.isNaN(pos[i].x));
+          assert(!std.math.isNaN(pos[i].y));
+          assert(!std.math.isNaN(pos[i].z));
         }
       }
     }

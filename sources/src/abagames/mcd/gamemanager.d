@@ -424,6 +424,7 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
       }
       if (state == GameState.IN_GAME)
         break;
+      goto case;
     case GameState.TITLE:
       titleManager.draw();
       break;

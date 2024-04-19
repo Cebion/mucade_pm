@@ -23,7 +23,7 @@ module ode.misc;
 
 /* miscellaneous math functions. these are mostly useful for testing */
 
-import std.c.stdio;
+import core.stdc.stdio;
 import ode.common;
 
 extern(C):

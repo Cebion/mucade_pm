@@ -23,7 +23,7 @@ module ode.error;
 
 /* this comes from the `reuse' library. copy any changes back to the source */
 
-import std.c.stdarg;
+import core.stdc.stdarg;
 import ode.config;
 
 extern(C):

@@ -92,7 +92,7 @@ public class World {
 }
 
 extern (C) {
-  dContact contact[World.MAX_CONTACTS];
+  dContact[World.MAX_CONTACTS] contact;
 
   void initContacts() {
     for (int i = 0; i < World.MAX_CONTACTS; i++) {

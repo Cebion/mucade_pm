@@ -56,4 +56,4 @@ void dQMultiply3 (ref dQuaternion qa, ref dQuaternion qb, ref dQuaternion qc);
 
 void dRfromQ (ref dMatrix3 R, ref dQuaternion q);
 void dQfromR (ref dQuaternion q, ref dMatrix3 R);
-void dDQfromW (ref dReal dq[4], ref dVector3 w, ref dQuaternion q);
+void dDQfromW (ref dReal[4] dq, ref dVector3 w, ref dQuaternion q);

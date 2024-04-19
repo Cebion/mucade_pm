@@ -2,12 +2,12 @@
 module ode.config;
 
 /* standard system headers */
-private import std.c.stdio;
-private import std.c.stdlib;
-private import std.c.math;
-private import std.c.stdarg;
-//import std.c.malloc;
-//import std.c.float;
+private import core.stdc.stdio;
+private import core.stdc.stdlib;
+private import core.stdc.math;
+private import core.stdc.stdarg;
+//import core.stdc.malloc;
+//import core.stdc.float;
 
 extern(C):
 

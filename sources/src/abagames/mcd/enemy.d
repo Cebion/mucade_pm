@@ -45,14 +45,14 @@ public class Enemy: OdeActor {
 
   invariant() {
     if (state && state.pos) {
-      assert(state.pos.x <>= 0);
-      assert(state.pos.y <>= 0);
-      assert(state.pos.z <>= 0);
+      assert(!std.math.isNaN(state.pos.x));
+      assert(!std.math.isNaN(state.pos.y));
+      assert(!std.math.isNaN(state.pos.z));
     }
     if (lastForce) {
-      assert(lastForce.x <>= 0);
-      assert(lastForce.y <>= 0);
-      assert(lastForce.z <>= 0);
+      assert(!std.math.isNaN(lastForce.x));
+      assert(!std.math.isNaN(lastForce.y));
+      assert(!std.math.isNaN(lastForce.z));
     }
   }
 
@@ -397,7 +397,7 @@ public class EnemyState {
  public:
   Vector3 pos;
   float deg;
-  GLreal rot[16];
+  GLreal[16] rot;
   dReal[3] linearVel;
   dReal[3] angularVel;
   Vector3 sizeScale;
@@ -425,16 +425,16 @@ public class EnemyState {
   Field field;
 
   invariant() {
-    assert(pos.x <>= 0);
-    assert(pos.y <>= 0);
-    assert(pos.z <>= 0);
-    assert(fabs(linearVel[0]) <>= 0);
-    assert(fabs(linearVel[1]) <>= 0);
-    assert(fabs(linearVel[2]) <>= 0);
-    assert(fabs(angularVel[0]) <>= 0);
-    assert(fabs(angularVel[1]) <>= 0);
-    assert(fabs(angularVel[2]) <>= 0);
-    assert(deg <>= 0);
+    assert(!std.math.isNaN(pos.x));
+    assert(!std.math.isNaN(pos.y));
+    assert(!std.math.isNaN(pos.z));
+    assert(!std.math.isNaN(fabs(linearVel[0])));
+    assert(!std.math.isNaN(fabs(linearVel[1])));
+    assert(!std.math.isNaN(fabs(linearVel[2])));
+    assert(!std.math.isNaN(fabs(angularVel[0])));
+    assert(!std.math.isNaN(fabs(angularVel[1])));
+    assert(!std.math.isNaN(fabs(angularVel[2])));
+    assert(!std.math.isNaN(deg));
     if (sizeScale) {
       assert(sizeScale.x > 0);
       assert(sizeScale.y > 0);

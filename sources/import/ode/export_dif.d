@@ -21,7 +21,7 @@
  *************************************************************************/
 module ode.export_dif;
 
-import std.c.stdio;
+import core.stdc.stdio;
 import ode.common;
 
 extern(C):
