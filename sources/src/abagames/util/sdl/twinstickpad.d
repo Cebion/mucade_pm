@@ -8,7 +8,7 @@ module abagames.util.sdl.twinstickpad;
 private import std.string;
 private import std.stdio;
 private import std.math;
-private import SDL;
+private import bindbc.sdl;
 private import abagames.util.vector;
 private import abagames.util.sdl.input;
 private import abagames.util.sdl.recordableinput;
@@ -23,7 +23,7 @@ public class TwinStickPad: Input {
   static bool buttonReversed = false;
   static bool enableAxis5 = false;
   static bool disableStick2 = false;
-  Uint8 *keys;
+  ubyte *keys;
  private:
   SDL_Joystick *stick = null;
   const int JOYSTICK_AXIS_MAX = 32768;
@@ -37,19 +37,15 @@ public class TwinStickPad: Input {
     if (st == null) {
       if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
         return null;
-      version (PANDORA) {
-        stick = null;
-      } else {
-        stick = SDL_JoystickOpen(0);
-      }
+      stick = SDL_JoystickOpen(0);
     } else {
       stick = st;
     }
     return stick;
   }
 
-  public void handleEvent(SDL_Event *event) {
-    keys = SDL_GetKeyState(null);
+  public void handleEvents() {
+    keys = SDL_GetKeyboardState(null);
   }
 
   public TwinStickPadState getState() {
@@ -80,58 +76,76 @@ public class TwinStickPad: Input {
     } else {
       state.left.x = state.left.y = state.right.x = state.right.y = 0;
     }
-    if (keys[SDLK_RIGHT] == SDL_PRESSED || keys[SDLK_KP6] == SDL_PRESSED ||
-        keys[SDLK_d] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_RIGHT] == SDL_PRESSED || keys[SDL_SCANCODE_KP_6] == SDL_PRESSED ||
+        keys[SDL_SCANCODE_D] == SDL_PRESSED)
       state.left.x = 1;
-    if (keys[SDLK_l] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_L] == SDL_PRESSED)
       state.right.x = 1;
-    if (keys[SDLK_LEFT] == SDL_PRESSED || keys[SDLK_KP4] == SDL_PRESSED ||
-        keys[SDLK_a] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_LEFT] == SDL_PRESSED || keys[SDL_SCANCODE_KP_4] == SDL_PRESSED ||
+        keys[SDL_SCANCODE_A] == SDL_PRESSED)
       state.left.x = -1;
-    if (keys[SDLK_j] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_J] == SDL_PRESSED)
       state.right.x = -1;
-    if (keys[SDLK_DOWN] == SDL_PRESSED || keys[SDLK_KP2] == SDL_PRESSED ||
-        keys[SDLK_s] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_DOWN] == SDL_PRESSED || keys[SDL_SCANCODE_KP_2] == SDL_PRESSED ||
+        keys[SDL_SCANCODE_S] == SDL_PRESSED)
       state.left.y = -1;
-    if (keys[SDLK_k] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_K] == SDL_PRESSED)
       state.right.y = -1;
-    if (keys[SDLK_UP] == SDL_PRESSED ||  keys[SDLK_KP8] == SDL_PRESSED ||
-        keys[SDLK_w] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_UP] == SDL_PRESSED ||  keys[SDL_SCANCODE_KP_8] == SDL_PRESSED ||
+        keys[SDL_SCANCODE_W] == SDL_PRESSED)
       state.left.y = 1;
-    if (keys[SDLK_i] == SDL_PRESSED)
+    if (keys[SDL_SCANCODE_I] == SDL_PRESSED)
       state.right.y = 1;
     state.button = 0;
     int btn1 = 0, btn2 = 0;
-    if (stick) {
-      btn1 = SDL_JoystickGetButton(stick, 0) + SDL_JoystickGetButton(stick, 2) +
-             SDL_JoystickGetButton(stick, 4) + SDL_JoystickGetButton(stick, 6) +
-             SDL_JoystickGetButton(stick, 8) + SDL_JoystickGetButton(stick, 10);
-      btn2 = SDL_JoystickGetButton(stick, 1) + SDL_JoystickGetButton(stick, 3) +
-             SDL_JoystickGetButton(stick, 5) + SDL_JoystickGetButton(stick, 7) +
-             SDL_JoystickGetButton(stick, 9) + SDL_JoystickGetButton(stick, 11);
-      if (enableAxis5) {
-        int ax2 = SDL_JoystickGetAxis(stick, 2);
-        if (ax2 > JOYSTICK_AXIS_MAX / 3 || ax2 < -JOYSTICK_AXIS_MAX / 3)
-          btn2 = 1;
+    version(PYRA) {
+    } else {
+      if (stick) {
+        btn1 = SDL_JoystickGetButton(stick, 0) + SDL_JoystickGetButton(stick, 2) +
+               SDL_JoystickGetButton(stick, 4) + SDL_JoystickGetButton(stick, 6) +
+               SDL_JoystickGetButton(stick, 8) + SDL_JoystickGetButton(stick, 10);
+        btn2 = SDL_JoystickGetButton(stick, 1) + SDL_JoystickGetButton(stick, 3) +
+               SDL_JoystickGetButton(stick, 5) + SDL_JoystickGetButton(stick, 7) +
+               SDL_JoystickGetButton(stick, 9) + SDL_JoystickGetButton(stick, 11);
+        if (enableAxis5) {
+          int ax2 = SDL_JoystickGetAxis(stick, 2);
+          if (ax2 > JOYSTICK_AXIS_MAX / 3 || ax2 < -JOYSTICK_AXIS_MAX / 3)
+            btn2 = 1;
+        }
       }
     }
-    if (keys[SDLK_z] == SDL_PRESSED || keys[SDLK_PERIOD] == SDL_PRESSED ||
-        keys[SDLK_LCTRL] == SDL_PRESSED || keys[SDLK_RCTRL] == SDL_PRESSED ||
-        btn1) {
-      if (!buttonReversed)
-        state.button |= TwinStickPadState.Button.A;
-      else
-        state.button |= TwinStickPadState.Button.B;
-    }
-    if (keys[SDLK_x] == SDL_PRESSED || keys[SDLK_SLASH] == SDL_PRESSED ||
-        keys[SDLK_LALT] == SDL_PRESSED || keys[SDLK_RALT] == SDL_PRESSED ||
-        keys[SDLK_LSHIFT] == SDL_PRESSED || keys[SDLK_RSHIFT] == SDL_PRESSED ||
-        keys[SDLK_RETURN] == SDL_PRESSED || keys[SDLK_SPACE] == SDL_PRESSED ||
-        btn2) {
-      if (!buttonReversed)
-        state.button |= TwinStickPadState.Button.B;
-      else
-        state.button |= TwinStickPadState.Button.A;
+    version (PYRA) {
+      if (keys[SDL_SCANCODE_HOME] == SDL_PRESSED || keys[SDL_SCANCODE_PAGEUP] == SDL_PRESSED) {
+        if (!buttonReversed)
+          state.button |= TwinStickPadState.Button.A;
+        else
+          state.button |= TwinStickPadState.Button.B;
+      }
+      if (keys[SDL_SCANCODE_PAGEDOWN] == SDL_PRESSED || keys[SDL_SCANCODE_END] == SDL_PRESSED) {
+        if (!buttonReversed)
+          state.button |= TwinStickPadState.Button.B;
+        else
+          state.button |= TwinStickPadState.Button.A;
+      }
+    } else {
+      if (keys[SDL_SCANCODE_Z] == SDL_PRESSED || keys[SDL_SCANCODE_PERIOD] == SDL_PRESSED ||
+          keys[SDL_SCANCODE_LCTRL] == SDL_PRESSED || keys[SDL_SCANCODE_RCTRL] == SDL_PRESSED ||
+          btn1) {
+        if (!buttonReversed)
+          state.button |= TwinStickPadState.Button.A;
+        else
+          state.button |= TwinStickPadState.Button.B;
+      }
+      if (keys[SDL_SCANCODE_X] == SDL_PRESSED || keys[SDL_SCANCODE_SLASH] == SDL_PRESSED ||
+          keys[SDL_SCANCODE_LALT] == SDL_PRESSED || keys[SDL_SCANCODE_RALT] == SDL_PRESSED ||
+          keys[SDL_SCANCODE_LSHIFT] == SDL_PRESSED || keys[SDL_SCANCODE_RSHIFT] == SDL_PRESSED ||
+          keys[SDL_SCANCODE_RETURN] == SDL_PRESSED || keys[SDL_SCANCODE_SPACE] == SDL_PRESSED ||
+          btn2) {
+        if (!buttonReversed)
+          state.button |= TwinStickPadState.Button.B;
+        else
+          state.button |= TwinStickPadState.Button.A;
+      }
     }
     return state;
   }

@@ -55,13 +55,13 @@ public class Screen: Screen3D {
 
   public override void screenResized() {
     super.screenResized();
-    float lw = (cast(float) width / 640 + cast(float) height / 480) / 2;
+    float lw = (cast(float) screenWidth / 640 + cast(float) screenHeight / 480) / 2;
     if (lw < 1)
       lw = 1;
     else if (lw > 4)
       lw = 4;
     glLineWidth(lw);
-    glViewport(startx, starty, width, height);
+    glViewport(screenStartX, screenStartY, screenWidth, screenHeight);
     if (field)
       field.setLookAt();
   }

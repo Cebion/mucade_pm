@@ -109,8 +109,8 @@ private void parseArgs(string[] commandArgs, Screen screen) {
       int w = to!int(args[i]);
       i++;
       int h = to!int(args[i]);
-      screen.width = w;
-      screen.height = h;
+      screen.screenWidth = w;
+      screen.screenHeight = h;
       break;
     case "-nosound":
       SoundManager.noSound = true;

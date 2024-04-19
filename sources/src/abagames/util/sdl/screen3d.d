@@ -7,7 +7,7 @@ module abagames.util.sdl.screen3d;
 
 private import std.string;
 private import std.conv;
-private import SDL;
+private import bindbc.sdl;
 private import opengl;
 private import abagames.util.vector;
 private import abagames.util.sdl.screen;
@@ -23,8 +23,13 @@ public class Screen3D: Screen, SizableScreen {
   float _nearPlane = 0.1;
   int _width = 640;
   int _height = 480;
-  int _startx = 0;
-  int _starty = 0;
+  int _screenWidth = 640;
+  int _screenHeight = 480;
+  int _screenStartX = 0;
+  int _screenStartY = 0;
+  string _name = "";
+  SDL_Window* _window;
+  SDL_GLContext _context;
   bool _windowMode = false;
 
   protected abstract void init();
@@ -37,38 +42,55 @@ public class Screen3D: Screen, SizableScreen {
         "Unable to initialize SDL: " ~ to!string(SDL_GetError()));
     }
     // Create an OpenGL screen.
-    Uint32 videoFlags;
-    videoFlags = SDL_OPENGL;
+    uint videoFlags;
+    videoFlags = SDL_WINDOW_OPENGL;
     if (_windowMode) {
-      videoFlags |= SDL_RESIZABLE;
+      videoFlags |= SDL_WINDOW_RESIZABLE;
     } else {
-      videoFlags |= SDL_FULLSCREEN;
+      videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
-    int physical_width = _width;
-    int physical_height = _height;
-    if (!windowMode) {
-      version (PANDORA) {
-        physical_width = 800;
-        physical_height = 480;
-      }
-      // center image on screen
-      _startx = (physical_width - _width) / 2;
-      _starty = (physical_height - _height) / 2;
+    _window = SDL_CreateWindow(std.string.toStringz(_name), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, videoFlags);
+    if (_window == null) {
+      throw new SDLInitFailedException(
+        "Unable to create SDL window: " ~ to!string(SDL_GetError()));
     }
-    if (SDL_SetVideoMode(physical_width, physical_height, 0, videoFlags) == null) {
-      throw new SDLInitFailedException
-        ("Unable to create SDL screen: " ~ to!string(SDL_GetError()));
+    _context = SDL_GL_CreateContext(_window);
+    if (_context == null) {
+      SDL_DestroyWindow(_window);
+      _window = null;
+      throw new SDLInitFailedException(
+        "Unable to initialize OpenGL context: " ~ to!string(SDL_GetError()));
     }
-    glViewport(_startx, _starty, _width, _height);
+    SDL_GetWindowSize(_window, &_screenWidth, &_screenHeight);
+    glViewport(_screenStartX, _screenStartY, _screenWidth, _screenHeight);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    resized(_width, _height);
+    resized(_screenWidth, _screenHeight);
     SDL_ShowCursor(SDL_DISABLE);
     init();
   }
 
   // Reset a viewport when the screen is resized.
   public void screenResized() {
-    glViewport(_startx, _starty, _width, _height);
+    static if (SDL_VERSION_ATLEAST(2, 0, 1)) {
+      SDL_version linked;
+      SDL_GetVersion(&linked);
+      if (SDL_version(linked.major, linked.minor, linked.patch) >= SDL_version(2, 0, 1)) {
+        int glwidth, glheight;
+        SDL_GL_GetDrawableSize(_window, &glwidth, &glheight);
+        if ((cast(float)(glwidth)) / _width <= (cast(float)(glheight)) / _height) {
+          _screenStartX = 0;
+          _screenWidth = glwidth;
+          _screenHeight = (glwidth * _height) / _width;
+          _screenStartY = (glheight - _screenHeight) / 2;
+        } else {
+          _screenStartY = 0;
+          _screenHeight = glheight;
+          _screenWidth = (glheight * _width) / _height;
+          _screenStartX = (glwidth - _screenWidth) / 2;
+        }
+      }
+    }
+    glViewport(_screenStartX, _screenStartY, _screenWidth, _screenHeight);
     glMatrixMode(GL_PROJECTION);
     setPerspective();
     glMatrixMode(GL_MODELVIEW);
@@ -85,19 +107,21 @@ public class Screen3D: Screen, SizableScreen {
   }
 
   public void resized(int w, int h) {
-    _width = w;
-    _height = h;
+    _screenWidth = w;
+    _screenHeight = h;
     screenResized();
   }
 
   public void closeSDL() {
     close();
     SDL_ShowCursor(SDL_ENABLE);
+    SDL_GL_DeleteContext(_context);
+    SDL_DestroyWindow(_window);
   }
 
   public void flip() {
     handleError();
-    SDL_GL_SwapBuffers();
+    SDL_GL_SwapWindow(_window);
   }
 
   public void clear() {
@@ -113,7 +137,10 @@ public class Screen3D: Screen, SizableScreen {
   }
 
   protected void setCaption(const char[] name) {
-    SDL_WM_SetCaption(std.string.toStringz(name), null);
+    _name = name.idup;
+    if (_window != null) {
+      SDL_SetWindowTitle(_window, std.string.toStringz(name));
+    }
   }
 
   public bool windowMode(bool v) {
@@ -124,7 +151,7 @@ public class Screen3D: Screen, SizableScreen {
     return _windowMode;
   }
 
-  public int width(int v) {
+/*  public int width(int v) {
     return _width = v;
   }
 
@@ -146,6 +173,29 @@ public class Screen3D: Screen, SizableScreen {
 
   public int starty() {
     return _starty;
+  }*/
+  public int screenWidth(int v) {
+    return _screenWidth = v;
+  }
+
+  public int screenWidth() {
+    return _screenWidth;
+  }
+
+  public int screenHeight(int v) {
+    return _screenHeight = v;
+  }
+
+  public int screenHeight() {
+    return _screenHeight;
+  }
+
+  public int screenStartX() {
+    return _screenStartX;
+  }
+
+  public int screenStartY() {
+    return _screenStartY;
   }
 
   public static void glVertex(Vector v) {

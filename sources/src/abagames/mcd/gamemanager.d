@@ -6,7 +6,7 @@
 module abagames.mcd.gamemanager;
 
 private import std.math;
-private import SDL;
+private import bindbc.sdl;
 private import opengl;
 private import ode.ode;
 private import abagames.util.rand;
@@ -267,7 +267,7 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
   }
 
   private void handleEscKey() {
-    if (pad.keys[SDLK_ESCAPE] == SDL_PRESSED) {
+    if (pad.keys[SDL_SCANCODE_ESCAPE] == SDL_PRESSED) {
       if (!escPressed) {
         escPressed = true;
         if (state == GameState.IN_GAME)
@@ -281,7 +281,7 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
   }
 
   private void handlePauseKey() {
-    if (pad.keys[SDLK_p] == SDL_PRESSED) {
+    if (pad.keys[SDL_SCANCODE_P] == SDL_PRESSED) {
       if (!pPressed) {
         pPressed = true;
         paused = !paused;
@@ -367,12 +367,6 @@ public class GameManager: abagames.util.sdl.gamemanager.GameManager {
   }
 
   public override void draw() {
-    SDL_Event e = mainLoop.event;
-    if (e.type == SDL_VIDEORESIZE) {
-      SDL_ResizeEvent re = e.resize;
-      if (re.w > 150 && re.h > 100)
-        screen.resized(re.w, re.h);
-    }
     if (state == GameState.IN_GAME || state == GameState.REPLAY)
       field.setLookAt();
     else
