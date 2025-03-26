@@ -33,16 +33,10 @@ public class TwinStickPad: Input {
     state = new TwinStickPadState;
   }
 
-  public SDL_Joystick* openJoystick(SDL_Joystick *st = null) {
-    if (st == null) {
-      if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
-        return null;
-      stick = SDL_JoystickOpen(0);
-    } else {
-      stick = st;
-    }
-    return stick;
-  }
+public SDL_Joystick* openJoystick(SDL_Joystick *st = null) {
+  // Simply return null without initializing joystick subsystem
+  return null;
+}
 
   public void handleEvents() {
     keys = SDL_GetKeyboardState(null);

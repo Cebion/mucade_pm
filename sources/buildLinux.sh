@@ -44,4 +44,4 @@ cd src/abagames/mcd
 find . -maxdepth 1 -name \*.d -type f -exec gdc $FLAGS -I../.. \{\} \;
 cd ../../..
 
-gdc -o Mu-cade -s -Wl,--gc-sections -static-libphobos import/*.o* import/ode/*.o* import/sdl/*.o* import/bindbc/sdl/*.o* src/abagames/util/*.o* src/abagames/util/bulletml/*.o* src/abagames/util/ode/*.o* src/abagames/util/sdl/*.o* src/abagames/mcd/*.o* -lGLU -lGL -lSDL2_mixer -lSDL2 -lbulletml_d -lode -L./lib/x64
+gdc -o Mu-cade -s -Wl,--gc-sections -static-libphobos import/*.o* import/ode/*.o* import/sdl/*.o* import/bindbc/sdl/*.o* src/abagames/util/*.o* src/abagames/util/bulletml/*.o* src/abagames/util/ode/*.o* src/abagames/util/sdl/*.o* src/abagames/mcd/*.o* -lGLU -lGL -lSDL2_mixer -lSDL2 -lbulletml_d -lode
